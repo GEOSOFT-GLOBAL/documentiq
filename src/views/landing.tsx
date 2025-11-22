@@ -1,9 +1,11 @@
-import React from 'react'
+import Hero from "@/components/landing/hero";
 
 const Landing = () => {
   return (
-    <div>Landing</div>
-  )
-}
+    <div className="w-screen">
+      <Hero />
+    </div>
+  );
+};
 
-export default Landing
+export default Landing;
