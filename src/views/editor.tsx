@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import MDEditor from "@uiw/react-md-editor";
 
 const Editor = () => {
-  return (
-    <div>Editor</div>
-  )
-}
+  const [value, setValue] = React.useState("**Hello world!**");
 
-export default Editor
+  return (
+    <div className="w-full h-full">
+      <MDEditor
+        value={value}
+        preview="edit"
+        height="calc(100vh - 100px)"
+        onChange={(val) => setValue(val || "")}
+      />
+    </div>
+  );
+};
+
+export default Editor;

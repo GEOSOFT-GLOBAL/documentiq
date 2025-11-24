@@ -1,16 +1,16 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Outlet, Link, useLocation } from "react-router-dom";
 
 const AppLayout = () => {
   const location = useLocation();
 
   const navItems = [
     { path: "/app", label: "Dashboard" },
-    { path: "/app/paraphraser", label: "Paraphraser" },
-    { path: "/app/converter", label: "Converter" },
     { path: "/app/editor", label: "Editor" },
+    { path: "/app/converter", label: "Converter" },
     { path: "/app/summarizer", label: "Summarizer" },
+    { path: "/app/paraphraser", label: "Paraphraser" },
   ];
 
   return (
