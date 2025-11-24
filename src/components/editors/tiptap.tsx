@@ -5,6 +5,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import SuperscriptExt from "@tiptap/extension-superscript";
 import SubscriptExt from "@tiptap/extension-subscript";
+import Image from "@tiptap/extension-image";
 import {
   Bold,
   Italic,
@@ -23,7 +24,7 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
-  Plus,
+  ImageIcon,
 } from "lucide-react";
 
 interface TiptapEditorProps {
@@ -32,12 +33,39 @@ interface TiptapEditorProps {
 }
 
 const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
+  const handleImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const url = event.target?.result as string;
+          if (url && editor) {
+            editor.chain().focus().setImage({ src: url }).run();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
       SuperscriptExt,
       SubscriptExt,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: "max-w-full h-auto rounded",
+        },
+      }),
       Link.configure({
         openOnClick: false,
       }),
@@ -272,10 +300,11 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         <div className="w-px h-6 bg-gray-600 mx-1" />
 
         <button
+          onClick={handleImageUpload}
           className="p-2 rounded text-gray-300 hover:bg-gray-700 transition-colors flex items-center gap-1"
-          title="Add"
+          title="Add Image"
         >
-          <Plus size={18} />
+          <ImageIcon size={18} />
           <span className="text-sm">Add</span>
         </button>
       </div>
