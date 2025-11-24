@@ -5,6 +5,7 @@ import TiptapEditor from "@/components/editors/tiptap";
 import LiveCodeEditor from "@/components/editors/code-editor";
 import { EquationEditor } from "@/components/editors/equation-editor";
 import FlowChart from "@/components/editors/flow-chart";
+import FlowDiagram from "@/components/editors/flow-diagram";
 
 const Editor = () => {
   const [value, setValue] = React.useState("**Hello world!**");
@@ -19,6 +20,7 @@ const Editor = () => {
           <TabsTrigger value="html">HTML Editor</TabsTrigger>
           <TabsTrigger value="equation">Equation Editor</TabsTrigger>
           <TabsTrigger value="flowchart">Flow Chart</TabsTrigger>
+          <TabsTrigger value="flowdiagram">Flow Diagram</TabsTrigger>
         </TabsList>
 
         <TabsContent value="markdown" className="h-full">
@@ -44,6 +46,10 @@ const Editor = () => {
 
         <TabsContent value="flowchart" className="h-full">
           <FlowChart />
+        </TabsContent>
+
+        <TabsContent value="flowdiagram" className="h-full">
+          <FlowDiagram />
         </TabsContent>
       </Tabs>
     </div>
