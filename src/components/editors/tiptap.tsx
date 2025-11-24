@@ -39,15 +39,10 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     input.accept = "image/*";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const url = event.target?.result as string;
-          if (url && editor) {
-            editor.chain().focus().setImage({ src: url }).run();
-          }
-        };
-        reader.readAsDataURL(file);
+      if (file && editor) {
+        // Create object URL for the file
+        const url = URL.createObjectURL(file);
+        editor.chain().focus().setImage({ src: url }).run();
       }
     };
     input.click();
