@@ -3,6 +3,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TiptapEditor from "@/components/editors/tiptap";
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor'
+import LiveCodeEditor from "@/components/editors/code-editor";
 
 const Editor = () => {
   const [value, setValue] = React.useState("**Hello world!**");
@@ -32,12 +33,7 @@ const Editor = () => {
         </TabsContent>
 
         <TabsContent value="html" className="h-full">
-          <textarea
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className="w-full h-[calc(100vh-180px)] p-4 border border-gray-300 rounded-md resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="<html>...</html>"
-          />
+          <LiveCodeEditor/>
         </TabsContent>
         
         <TabsContent value="equation" className="h-full">
