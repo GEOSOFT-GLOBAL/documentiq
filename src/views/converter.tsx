@@ -1,50 +1,60 @@
-import { useState } from 'react';
-import { useWasmConverter } from '@/hooks/useWasmConverter';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '@/components/ui/label';
-import { Download, FileText, Code, FileCode } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useWasmConverter } from "@/hooks/useWasmConverter";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Download, FileText, Code, FileCode, Printer } from "lucide-react";
+import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-type ConversionType = 'md-html' | 'md-pdf' | 'latex-mathml' | 'latex-pdf';
+type ConversionType = "md-html" | "md-pdf" | "latex-mathml" | "latex-pdf";
 
 const Converter = () => {
-  const { loading, error, ready, convertMarkdownToHtml, convertMarkdownToPdfHtml, convertLatexToMathML } = useWasmConverter();
-  
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
-  const [conversionType, setConversionType] = useState<ConversionType>('md-html');
+  const {
+    loading,
+    error,
+    ready,
+    convertMarkdownToHtml,
+    convertMarkdownToPdfHtml,
+    convertLatexToMathML,
+  } = useWasmConverter();
+
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [conversionType, setConversionType] =
+    useState<ConversionType>("md-html");
 
   const handleConvert = () => {
     if (!ready) {
-      toast.error('Converter not ready');
+      toast.error("Converter not ready");
       return;
     }
 
     try {
-      let result = '';
-      
+      let result = "";
+
       switch (conversionType) {
-        case 'md-html':
+        case "md-html":
           result = convertMarkdownToHtml(input);
           break;
-        case 'md-pdf':
-          result = convertMarkdownToPdfHtml(input, 'Document');
+        case "md-pdf":
+          result = convertMarkdownToPdfHtml(input, "Document");
           break;
-        case 'latex-mathml':
+        case "latex-mathml":
           result = convertLatexToMathML(input);
           break;
-        case 'latex-pdf':
+        case "latex-pdf":
           // For LaTeX to PDF, we'd need additional processing
-          toast.info('LaTeX to PDF requires server-side processing');
+          toast.info("LaTeX to PDF requires server-side processing");
           return;
         default:
-          toast.error('Unknown conversion type');
+          toast.error("Unknown conversion type");
           return;
       }
-      
+
       setOutput(result);
-      toast.success('Conversion complete!');
+      toast.success("Conversion complete!");
     } catch (err) {
       toast.error(`Conversion failed: ${err}`);
     }
@@ -52,57 +62,128 @@ const Converter = () => {
 
   const handleDownload = () => {
     if (!output) {
-      toast.error('No output to download');
+      toast.error("No output to download");
+      return;
+    }
+
+    if (conversionType === "md-pdf") {
+      // For PDF, open in new window for print-to-PDF
+      handlePrintToPdf();
       return;
     }
 
     const blob = new Blob([output], { type: getOutputMimeType() });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = getOutputFilename();
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success('Downloaded!');
+    toast.success("Downloaded!");
+  };
+
+  const handlePrintToPdf = async () => {
+    try {
+      toast.info("Generating PDF...");
+
+      // Create a temporary container
+      const container = document.createElement("div");
+      container.innerHTML = output;
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.width = "800px";
+      container.style.padding = "40px";
+      container.style.backgroundColor = "white";
+      document.body.appendChild(container);
+
+      // Convert HTML to canvas
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+
+      // Remove temporary container
+      document.body.removeChild(container);
+
+      // Create PDF
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save("document.pdf");
+
+      toast.success("PDF downloaded!");
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      toast.error("Failed to generate PDF. Try using browser Print instead.");
+    }
+  };
+
+  const handleBrowserPrint = () => {
+    // Open HTML in new window for print-to-PDF
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      toast.error("Please allow popups to print");
+      return;
+    }
+
+    printWindow.document.write(output);
+    printWindow.document.close();
+
+    // Wait for content to load, then trigger print dialog
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+        toast.success("Use Print dialog to save as PDF");
+      }, 250);
+    };
   };
 
   const getOutputMimeType = () => {
     switch (conversionType) {
-      case 'md-html':
-      case 'md-pdf':
-        return 'text/html';
-      case 'latex-mathml':
-        return 'application/mathml+xml';
+      case "md-html":
+      case "md-pdf":
+        return "text/html";
+      case "latex-mathml":
+        return "application/mathml+xml";
       default:
-        return 'text/plain';
+        return "text/plain";
     }
   };
 
   const getOutputFilename = () => {
     switch (conversionType) {
-      case 'md-html':
-        return 'output.html';
-      case 'md-pdf':
-        return 'output-pdf.html';
-      case 'latex-mathml':
-        return 'output.mathml';
+      case "md-html":
+        return "output.html";
+      case "md-pdf":
+        return "output.html";
+      case "latex-mathml":
+        return "output.mathml";
       default:
-        return 'output.txt';
+        return "output.txt";
     }
   };
 
   const exampleInputs: Record<ConversionType, string> = {
-    'md-html': `# Hello World\n\nThis is **bold** and this is *italic*.\n\n- Item 1\n- Item 2\n\n\`\`\`javascript\nconsole.log('Hello');\n\`\`\``,
-    'md-pdf': `# Document Title\n\n## Introduction\n\nThis document will be converted to PDF-ready HTML.\n\n### Features\n\n- Clean styling\n- Print-friendly\n- Professional layout`,
-    'latex-mathml': `x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}`,
-    'latex-pdf': `\\documentclass{article}\n\\begin{document}\nHello LaTeX!\n\\end{document}`,
+    "md-html": `# Hello World\n\nThis is **bold** and this is *italic*.\n\n- Item 1\n- Item 2\n\n\`\`\`javascript\nconsole.log('Hello');\n\`\`\``,
+    "md-pdf": `# Document Title\n\n## Introduction\n\nThis document will be converted to PDF-ready HTML.\n\n### Features\n\n- Clean styling\n- Print-friendly\n- Professional layout`,
+    "latex-mathml": `x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}`,
+    "latex-pdf": `\\documentclass{article}\n\\begin{document}\nHello LaTeX!\n\\end{document}`,
   };
 
   const loadExample = () => {
     setInput(exampleInputs[conversionType]);
-    setOutput('');
+    setOutput("");
   };
 
   if (loading) {
@@ -124,7 +205,10 @@ const Converter = () => {
           <h2 className="text-xl font-semibold mb-2">Converter Error</h2>
           <p className="text-muted-foreground mb-4">{error}</p>
           <p className="text-sm text-muted-foreground">
-            Run: <code className="bg-muted px-2 py-1 rounded">cd rust-converter && ./build.ps1</code>
+            Run:{" "}
+            <code className="bg-muted px-2 py-1 rounded">
+              cd rust-converter && ./build.ps1
+            </code>
           </p>
         </div>
       </div>
@@ -140,7 +224,11 @@ const Converter = () => {
         </p>
       </div>
 
-      <Tabs value={conversionType} onValueChange={(v) => setConversionType(v as ConversionType)} className="mb-4">
+      <Tabs
+        value={conversionType}
+        onValueChange={(v) => setConversionType(v as ConversionType)}
+        className="mb-4"
+      >
         <TabsList>
           <TabsTrigger value="md-html">
             <FileText className="h-4 w-4 mr-2" />
@@ -168,10 +256,31 @@ const Converter = () => {
         <Button onClick={loadExample} variant="outline">
           Load Example
         </Button>
-        <Button onClick={handleDownload} variant="outline" disabled={!output}>
-          <Download className="h-4 w-4 mr-2" />
-          Download
-        </Button>
+        {conversionType === "md-pdf" ? (
+          <>
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              disabled={!output}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </Button>
+            <Button
+              onClick={handleBrowserPrint}
+              variant="outline"
+              disabled={!output}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print
+            </Button>
+          </>
+        ) : (
+          <Button onClick={handleDownload} variant="outline" disabled={!output}>
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
@@ -189,9 +298,13 @@ const Converter = () => {
           <Label className="mb-2">Output</Label>
           <div className="flex-1 p-4 border rounded-md bg-muted overflow-auto">
             {output ? (
-              <pre className="font-mono text-sm whitespace-pre-wrap">{output}</pre>
+              <pre className="font-mono text-sm whitespace-pre-wrap">
+                {output}
+              </pre>
             ) : (
-              <p className="text-muted-foreground">Output will appear here...</p>
+              <p className="text-muted-foreground">
+                Output will appear here...
+              </p>
             )}
           </div>
         </div>
