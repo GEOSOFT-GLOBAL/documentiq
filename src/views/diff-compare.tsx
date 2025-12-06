@@ -1,9 +1,21 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Copy, GitCompare, RotateCcw, Download, Upload, ArrowLeftRight } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Copy,
+  GitCompare,
+  RotateCcw,
+  Download,
+  Upload,
+  ArrowLeftRight,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,13 +46,13 @@ const DiffCompare = () => {
 
     // Apply filters
     if (ignoreWhitespace) {
-      leftLines = leftLines.map(line => line.trim());
-      rightLines = rightLines.map(line => line.trim());
+      leftLines = leftLines.map((line) => line.trim());
+      rightLines = rightLines.map((line) => line.trim());
     }
 
     if (ignoreCase) {
-      leftLines = leftLines.map(line => line.toLowerCase());
-      rightLines = rightLines.map(line => line.toLowerCase());
+      leftLines = leftLines.map((line) => line.toLowerCase());
+      rightLines = rightLines.map((line) => line.toLowerCase());
     }
 
     const diff: DiffLine[] = [];
@@ -85,13 +97,48 @@ const DiffCompare = () => {
   }, [leftText, rightText, ignoreWhitespace, ignoreCase]);
 
   const stats = useMemo(() => {
-    const added = computeDiff.filter(d => d.type === "added").length;
-    const removed = computeDiff.filter(d => d.type === "removed").length;
-    const modified = computeDiff.filter(d => d.type === "modified").length;
-    const unchanged = computeDiff.filter(d => d.type === "unchanged").length;
+    const added = computeDiff.filter((d) => d.type === "added").length;
+    const removed = computeDiff.filter((d) => d.type === "removed").length;
+    const modified = computeDiff.filter((d) => d.type === "modified").length;
+    const unchanged = computeDiff.filter((d) => d.type === "unchanged").length;
 
     return { added, removed, modified, unchanged, total: computeDiff.length };
   }, [computeDiff]);
+
+  // Helper function to highlight word differences
+  const highlightWordDifferences = (
+    text1: string,
+    text2: string,
+    side: "left" | "right"
+  ) => {
+    const words1 = text1.split(/(\s+)/);
+    const words2 = text2.split(/(\s+)/);
+
+    const maxLength = Math.max(words1.length, words2.length);
+    const result: React.ReactNode[] = [];
+
+    for (let i = 0; i < maxLength; i++) {
+      const word1 = words1[i] || "";
+      const word2 = words2[i] || "";
+      const currentWord = side === "left" ? word1 : word2;
+      const otherWord = side === "left" ? word2 : word1;
+
+      if (currentWord !== otherWord && currentWord.trim() !== "") {
+        result.push(
+          <span
+            key={i}
+            className="bg-yellow-300 dark:bg-yellow-700 px-0.5 rounded"
+          >
+            {currentWord}
+          </span>
+        );
+      } else {
+        result.push(<span key={i}>{currentWord}</span>);
+      }
+    }
+
+    return result;
+  };
 
   const handleSwap = () => {
     const temp = leftText;
@@ -108,10 +155,11 @@ const DiffCompare = () => {
 
   const handleCopyDiff = () => {
     const diffText = computeDiff
-      .map(line => {
+      .map((line) => {
         if (line.type === "added") return `+ ${line.rightLine}`;
         if (line.type === "removed") return `- ${line.leftLine}`;
-        if (line.type === "modified") return `~ ${line.leftLine} → ${line.rightLine}`;
+        if (line.type === "modified")
+          return `~ ${line.leftLine} → ${line.rightLine}`;
         return `  ${line.leftLine}`;
       })
       .join("\n");
@@ -122,10 +170,11 @@ const DiffCompare = () => {
 
   const handleDownloadDiff = () => {
     const diffText = computeDiff
-      .map(line => {
+      .map((line) => {
         if (line.type === "added") return `+ ${line.rightLine}`;
         if (line.type === "removed") return `- ${line.leftLine}`;
-        if (line.type === "modified") return `~ ${line.leftLine} → ${line.rightLine}`;
+        if (line.type === "modified")
+          return `~ ${line.leftLine} → ${line.rightLine}`;
         return `  ${line.leftLine}`;
       })
       .join("\n");
@@ -142,25 +191,26 @@ const DiffCompare = () => {
     toast.success("Downloaded!");
   };
 
-  const handleFileUpload = (side: "left" | "right") => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileUpload =
+    (side: "left" | "right") => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      if (side === "left") {
-        setLeftText(text);
-      } else {
-        setRightText(text);
-      }
-      toast.success(`File loaded to ${side} side`);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        if (side === "left") {
+          setLeftText(text);
+        } else {
+          setRightText(text);
+        }
+        toast.success(`File loaded to ${side} side`);
+      };
+      reader.onerror = () => {
+        toast.error("Failed to read file");
+      };
+      reader.readAsText(file);
     };
-    reader.onerror = () => {
-      toast.error("Failed to read file");
-    };
-    reader.readAsText(file);
-  };
 
   const loadExample = () => {
     setLeftText(`function calculateTotal(items) {
@@ -246,15 +296,16 @@ const user = {
       </Card>
 
       <div className="flex items-center justify-between mb-4">
-        <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+        <Tabs
+          value={viewMode}
+          onValueChange={(v) => setViewMode(v as ViewMode)}
+        >
           <TabsList>
             <TabsTrigger value="side-by-side">
               <GitCompare className="h-4 w-4 mr-2" />
               Side by Side
             </TabsTrigger>
-            <TabsTrigger value="unified">
-              Unified View
-            </TabsTrigger>
+            <TabsTrigger value="unified">Unified View</TabsTrigger>
           </TabsList>
         </Tabs>
 
@@ -270,11 +321,21 @@ const user = {
             <RotateCcw className="h-4 w-4 mr-2" />
             Reset
           </Button>
-          <Button onClick={handleCopyDiff} variant="outline" size="sm" disabled={!leftText && !rightText}>
+          <Button
+            onClick={handleCopyDiff}
+            variant="outline"
+            size="sm"
+            disabled={!leftText && !rightText}
+          >
             <Copy className="h-4 w-4 mr-2" />
             Copy Diff
           </Button>
-          <Button onClick={handleDownloadDiff} variant="outline" size="sm" disabled={!leftText && !rightText}>
+          <Button
+            onClick={handleDownloadDiff}
+            variant="outline"
+            size="sm"
+            disabled={!leftText && !rightText}
+          >
             <Download className="h-4 w-4 mr-2" />
             Download
           </Button>
@@ -325,12 +386,41 @@ const user = {
                 </label>
               </Button>
             </div>
-            <Textarea
-              value={leftText}
-              onChange={(e) => setLeftText(e.target.value)}
-              className="flex-1 resize-none font-mono text-sm"
-              placeholder="Enter or paste original text..."
-            />
+            <div className="flex-1 border rounded-md overflow-auto">
+              <div className="font-mono text-sm">
+                {computeDiff.map((line, idx) => (
+                  <div
+                    key={idx}
+                    className={`px-4 py-1 min-h-[24px] ${
+                      line.type === "removed"
+                        ? "bg-red-100 dark:bg-red-950 border-l-4 border-red-500"
+                        : line.type === "modified"
+                        ? "bg-yellow-50 dark:bg-yellow-950/30 border-l-4 border-yellow-500"
+                        : line.type === "added"
+                        ? "bg-muted/50"
+                        : "bg-background"
+                    }`}
+                  >
+                    <span className="text-muted-foreground mr-4 inline-block w-8 text-right text-xs">
+                      {line.leftLineNum}
+                    </span>
+                    {line.type === "modified" &&
+                    line.leftLine &&
+                    line.rightLine ? (
+                      <span>
+                        {highlightWordDifferences(
+                          line.leftLine,
+                          line.rightLine,
+                          "left"
+                        )}
+                      </span>
+                    ) : (
+                      <span>{line.leftLine || ""}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col">
@@ -350,36 +440,68 @@ const user = {
                 </label>
               </Button>
             </div>
-            <Textarea
-              value={rightText}
-              onChange={(e) => setRightText(e.target.value)}
-              className="flex-1 resize-none font-mono text-sm"
-              placeholder="Enter or paste modified text..."
-            />
+            <div className="flex-1 border rounded-md overflow-auto">
+              <div className="font-mono text-sm">
+                {computeDiff.map((line, idx) => (
+                  <div
+                    key={idx}
+                    className={`px-4 py-1 min-h-[24px] ${
+                      line.type === "added"
+                        ? "bg-green-100 dark:bg-green-950 border-l-4 border-green-500"
+                        : line.type === "modified"
+                        ? "bg-yellow-50 dark:bg-yellow-950/30 border-l-4 border-yellow-500"
+                        : line.type === "removed"
+                        ? "bg-muted/50"
+                        : "bg-background"
+                    }`}
+                  >
+                    <span className="text-muted-foreground mr-4 inline-block w-8 text-right text-xs">
+                      {line.rightLineNum}
+                    </span>
+                    {line.type === "modified" &&
+                    line.leftLine &&
+                    line.rightLine ? (
+                      <span>
+                        {highlightWordDifferences(
+                          line.leftLine,
+                          line.rightLine,
+                          "right"
+                        )}
+                      </span>
+                    ) : (
+                      <span>{line.rightLine || ""}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       ) : (
         <div className="flex-1 min-h-0 overflow-auto border rounded-md">
           <div className="font-mono text-sm">
             {computeDiff.map((line, idx) => (
-              <div
-                key={idx}
-                className={`px-4 py-1 ${getLineColor(line.type)}`}
-              >
+              <div key={idx} className={`px-4 py-1 ${getLineColor(line.type)}`}>
                 <span className="text-muted-foreground mr-4 inline-block w-12 text-right">
                   {line.leftLineNum || line.rightLineNum}
                 </span>
                 {line.type === "added" && (
-                  <span className="text-green-700 dark:text-green-300">+ {line.rightLine}</span>
+                  <span className="text-green-700 dark:text-green-300">
+                    + {line.rightLine}
+                  </span>
                 )}
                 {line.type === "removed" && (
-                  <span className="text-red-700 dark:text-red-300">- {line.leftLine}</span>
+                  <span className="text-red-700 dark:text-red-300">
+                    - {line.leftLine}
+                  </span>
                 )}
                 {line.type === "modified" && (
-                  <span className="text-yellow-700 dark:text-yellow-300">~ {line.rightLine}</span>
+                  <span className="text-yellow-700 dark:text-yellow-300">
+                    ~ {line.rightLine}
+                  </span>
                 )}
                 {line.type === "unchanged" && (
-                  <span className="text-foreground">  {line.leftLine}</span>
+                  <span className="text-foreground"> {line.leftLine}</span>
                 )}
               </div>
             ))}
