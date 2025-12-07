@@ -4,6 +4,7 @@ import Converter from "@/views/converter";
 import Editor from "@/views/editor";
 import Summarizer from "@/views/summarizer";
 import DiffCompare from "@/views/diff-compare";
+import TextUtilities from "@/views/text-utilities";
 
 export const appRoutes = [
   {
@@ -29,5 +30,9 @@ export const appRoutes = [
   {
     path: "diff-compare",
     element: <DiffCompare />,
+  },
+  {
+    path: "text-utilities",
+    element: <TextUtilities />,
   },
 ];
