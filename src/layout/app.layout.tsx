@@ -13,6 +13,7 @@ const AppLayout = () => {
     { path: "/app/paraphraser", label: "Paraphraser" },
     { path: "/app/diff-compare", label: "Diff Compare" },
     { path: "/app/text-utilities", label: "Text Utilities" },
+    { path: "/app/readability-analyzer", label: "Readability" },
   ];
 
   return (

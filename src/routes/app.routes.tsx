@@ -5,6 +5,7 @@ import Editor from "@/views/editor";
 import Summarizer from "@/views/summarizer";
 import DiffCompare from "@/views/diff-compare";
 import TextUtilities from "@/views/text-utilities";
+import ReadabilityAnalyzer from "@/views/readability-analyzer";
 
 export const appRoutes = [
   {
@@ -34,5 +35,9 @@ export const appRoutes = [
   {
     path: "text-utilities",
     element: <TextUtilities />,
+  },
+  {
+    path: "readability-analyzer",
+    element: <ReadabilityAnalyzer />,
   },
 ];
