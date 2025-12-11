@@ -34,6 +34,7 @@ export const extractMetadataFromDocument = (
   // Extract ISBN
   const isbnMatch = content.match(/ISBN[:\s]*([0-9-X]+)/i);
   const isbn = isbnMatch ? isbnMatch[1] : "";
+  console.log(isbn)
 
   // Extract publisher
   const publisherMatch = content.match(
