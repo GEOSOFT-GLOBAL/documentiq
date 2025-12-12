@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,6 +25,7 @@ import {
   ArrowRightLeft,
   Volume2,
   Upload,
+  Info,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,15 +34,18 @@ interface Language {
   name: string;
 }
 
-// LibreTranslate supported languages
+// MyMemory supported languages
 const LANGUAGES: Language[] = [
   { code: "en", name: "English" },
   { code: "ar", name: "Arabic" },
-  { code: "az", name: "Azerbaijani" },
-  { code: "zh", name: "Chinese" },
+  { code: "bg", name: "Bulgarian" },
+  { code: "ca", name: "Catalan" },
+  { code: "zh-CN", name: "Chinese (Simplified)" },
+  { code: "zh-TW", name: "Chinese (Traditional)" },
   { code: "cs", name: "Czech" },
   { code: "da", name: "Danish" },
   { code: "nl", name: "Dutch" },
+  { code: "et", name: "Estonian" },
   { code: "fi", name: "Finnish" },
   { code: "fr", name: "French" },
   { code: "de", name: "German" },
@@ -53,12 +57,16 @@ const LANGUAGES: Language[] = [
   { code: "it", name: "Italian" },
   { code: "ja", name: "Japanese" },
   { code: "ko", name: "Korean" },
+  { code: "lv", name: "Latvian" },
+  { code: "lt", name: "Lithuanian" },
+  { code: "no", name: "Norwegian" },
   { code: "fa", name: "Persian" },
   { code: "pl", name: "Polish" },
   { code: "pt", name: "Portuguese" },
   { code: "ro", name: "Romanian" },
   { code: "ru", name: "Russian" },
   { code: "sk", name: "Slovak" },
+  { code: "sl", name: "Slovenian" },
   { code: "es", name: "Spanish" },
   { code: "sv", name: "Swedish" },
   { code: "th", name: "Thai" },
@@ -67,12 +75,16 @@ const LANGUAGES: Language[] = [
   { code: "vi", name: "Vietnamese" },
 ];
 
-// LibreTranslate API endpoints (public instances)
-const LIBRE_TRANSLATE_URLS = [
-  "https://libretranslate.com",
-  "https://translate.argosopentech.com",
-  "https://translate.terraprint.co",
-];
+// MyMemory API response interface
+interface MyMemoryResponse {
+  responseData: {
+    translatedText: string;
+    match: number;
+  };
+  quotaFinished: boolean;
+  responseStatus: number;
+  responseDetails?: string;
+}
 
 const LanguageTranslator = () => {
   const [input, setInput] = useState("");
@@ -81,87 +93,70 @@ const LanguageTranslator = () => {
   const [targetLang, setTargetLang] = useState("es");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [detectedLang, setDetectedLang] = useState<string | null>(null);
-  const [apiUrl, setApiUrl] = useState(LIBRE_TRANSLATE_URLS[0]);
+  const [matchScore, setMatchScore] = useState<number | null>(null);
 
-  // Debounced language detection
-  useEffect(() => {
-    const detectLanguage = async (text: string) => {
-      if (!text.trim()) return;
-
-      try {
-        const response = await fetch(`${apiUrl}/detect`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ q: text.slice(0, 500) }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data[0]) {
-            setDetectedLang(data[0].language);
-          }
-        }
-      } catch {
-        // Silent fail for detection
-      }
-    };
-
-    const timer = setTimeout(() => {
-      if (input.length > 10) {
-        detectLanguage(input);
-      }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [input, apiUrl]);
-
+  // MyMemory API: https://mymemory.translated.net/doc/spec.php
+  // Free tier: 5000 chars/day (anonymous), 50000 chars/day (with email)
   const handleTranslate = async () => {
     if (!input.trim()) {
       toast.error("Please enter text to translate");
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
-    // Try each API endpoint until one works
-    for (const url of LIBRE_TRANSLATE_URLS) {
-      try {
-        const response = await fetch(`${url}/translate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            q: input,
-            source: sourceLang === "auto" ? detectedLang || "en" : sourceLang,
-            target: targetLang,
-            format: "text",
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setOutput(data.translatedText);
-          setApiUrl(url); // Remember working URL
-          toast.success("Translation complete!");
-          setLoading(false);
-          return;
-        }
-      } catch {
-        continue; // Try next URL
-      }
+    if (sourceLang === targetLang) {
+      toast.error("Source and target languages must be different");
+      return;
     }
 
-    setError("Translation failed. Please try again later.");
-    toast.error("Translation failed");
-    setLoading(false);
+    setLoading(true);
+    setError(null);
+    setMatchScore(null);
+
+    try {
+      // MyMemory API endpoint
+      // Format: https://api.mymemory.translated.net/get?q=text&langpair=en|es
+      const langPair = `${sourceLang}|${targetLang}`;
+      const encodedText = encodeURIComponent(input);
+      
+      const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${langPair}`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      const data: MyMemoryResponse = await response.json();
+
+      if (data.quotaFinished) {
+        setError("Daily translation quota exceeded. Please try again tomorrow.");
+        toast.error("Quota exceeded");
+        setLoading(false);
+        return;
+      }
+
+      if (data.responseStatus !== 200) {
+        throw new Error(data.responseDetails || "Translation failed");
+      }
+
+      setOutput(data.responseData.translatedText);
+      setMatchScore(Math.round(data.responseData.match * 100));
+      toast.success("Translation complete!");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Translation failed";
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSwapLanguages = () => {
-    if (sourceLang === "auto") return;
     setSourceLang(targetLang);
     setTargetLang(sourceLang);
     setInput(output);
     setOutput(input);
+    setMatchScore(null);
   };
 
   const handleCopy = () => {
@@ -178,9 +173,7 @@ const LanguageTranslator = () => {
       toast.error("No translation to download");
       return;
     }
-    const content = `Source (${getLanguageName(
-      sourceLang
-    )}):\n${input}\n\nTranslation (${getLanguageName(targetLang)}):\n${output}`;
+    const content = `Source (${getLanguageName(sourceLang)}):\n${input}\n\nTranslation (${getLanguageName(targetLang)}):\n${output}`;
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -196,8 +189,8 @@ const LanguageTranslator = () => {
   const handleReset = () => {
     setInput("");
     setOutput("");
-    setDetectedLang(null);
     setError(null);
+    setMatchScore(null);
     toast.info("Reset complete");
   };
 
@@ -212,18 +205,15 @@ const LanguageTranslator = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (
-      !file.type.startsWith("text/") &&
-      !file.name.endsWith(".txt") &&
-      !file.name.endsWith(".md")
-    ) {
+    if (!file.type.startsWith("text/") && !file.name.endsWith(".txt") && !file.name.endsWith(".md")) {
       toast.error("Please upload a text file");
       return;
     }
 
     try {
       const text = await file.text();
-      setInput(text.slice(0, 10000)); // Limit to 10k chars
+      // MyMemory has a 500 char limit per request for free tier
+      setInput(text.slice(0, 5000));
       toast.success("File loaded!");
     } catch {
       toast.error("Failed to read file");
@@ -231,7 +221,6 @@ const LanguageTranslator = () => {
   };
 
   const getLanguageName = (code: string): string => {
-    if (code === "auto") return "Auto-detect";
     return LANGUAGES.find((l) => l.code === code)?.name || code;
   };
 
@@ -243,7 +232,7 @@ const LanguageTranslator = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Language Translator</h1>
         <p className="text-muted-foreground">
-          Translate text between 30+ languages using LibreTranslate
+          Translate text between 35+ languages using MyMemory API
         </p>
       </div>
 
@@ -262,10 +251,6 @@ const LanguageTranslator = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">
-                    Auto-detect{" "}
-                    {detectedLang && `(${getLanguageName(detectedLang)})`}
-                  </SelectItem>
                   {LANGUAGES.map((lang) => (
                     <SelectItem key={lang.code} value={lang.code}>
                       {lang.name}
@@ -279,7 +264,6 @@ const LanguageTranslator = () => {
               variant="outline"
               size="icon"
               onClick={handleSwapLanguages}
-              disabled={sourceLang === "auto"}
               className="mt-6"
             >
               <ArrowRightLeft className="h-4 w-4" />
@@ -351,18 +335,21 @@ const LanguageTranslator = () => {
         </div>
       )}
 
+      {/* Match Score Info */}
+      {matchScore !== null && (
+        <div className="mb-4 p-3 bg-muted rounded-md flex items-center gap-2">
+          <Info className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            Translation confidence: {matchScore}%
+          </span>
+        </div>
+      )}
+
       {/* Text Areas */}
       <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
-            <Label className="flex items-center gap-2">
-              Source Text
-              {detectedLang && sourceLang === "auto" && (
-                <span className="text-xs text-muted-foreground">
-                  (Detected: {getLanguageName(detectedLang)})
-                </span>
-              )}
-            </Label>
+            <Label>Source Text ({getLanguageName(sourceLang)})</Label>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
                 {wordCount} words · {charCount} chars
@@ -371,12 +358,7 @@ const LanguageTranslator = () => {
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6"
-                onClick={() =>
-                  handleSpeak(
-                    input,
-                    sourceLang === "auto" ? detectedLang || "en" : sourceLang
-                  )
-                }
+                onClick={() => handleSpeak(input, sourceLang)}
                 disabled={!input}
               >
                 <Volume2 className="h-3 w-3" />
