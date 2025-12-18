@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { Settings } from "lucide-react";
 
 const AppLayout = () => {
   const location = useLocation();
@@ -21,7 +23,20 @@ const AppLayout = () => {
   ];
 
   return (
-    <div className="flex min-h-screen gap-4 p-4 bg-background">
+    <div className="flex min-h-screen gap-4 p-4 bg-background relative">
+      {/* Settings Icon - Fixed Top Right */}
+      <Link to="/app/settings" className="fixed m-5 top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="icon"
+          className={cn(
+            "rounded-full",
+            location.pathname === "/app/settings" && "bg-accent"
+          )}
+        >
+          <Settings className="h-5 w-5" />
+        </Button>
+      </Link>
       <Card className="w-44 p-4 h-fit sticky top-4">
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">DocumentIQ</h2>

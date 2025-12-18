@@ -10,6 +10,7 @@ import KeywordExtractor from "@/views/keyword-extractor";
 import CitationGenerator from "@/views/citation-generator";
 import LanguageTranslator from "@/views/language-translator";
 import QRGenerator from "@/views/qr-generator";
+import Settings from "@/views/settings";
 
 export const appRoutes = [
   {
@@ -59,5 +60,9 @@ export const appRoutes = [
   {
     path: "qr-generator",
     element: <QRGenerator />,
+  },
+  {
+    path: "settings",
+    element: <Settings />,
   },
 ];
