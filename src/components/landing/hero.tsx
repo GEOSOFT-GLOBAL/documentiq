@@ -18,7 +18,7 @@ const Hero = () => {
         {/* Main Heading */}
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
           Transform Your
-          <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
             {" "}
             Documents{" "}
           </span>
