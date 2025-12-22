@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 font-semibold text-lg mb-4">
               <FileText className="h-6 w-6 text-primary" />
-              <span>FileFlow</span>
+              <span>LinkShyft</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Convert, compress, and share files instantly via personal web links.
@@ -87,7 +87,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FileFlow. All rights reserved.
+            © {new Date().getFullYear()} LinkShyft. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">

@@ -1,4 +1,4 @@
-# FileFlow - Convert, Compress & Share
+# LinkShyft - Convert, Compress & Share
 
 A modern web application for converting, compressing, and sharing files via personal web links — no contact exchange needed.
 
@@ -44,4 +44,4 @@ src/
 
 ## License
 
-MIT
+MIT © LinkShyft

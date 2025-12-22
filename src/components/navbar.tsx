@@ -20,7 +20,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
           <FileText className="h-6 w-6 text-primary" />
-          <span>FileFlow</span>
+          <span>LinkShyft</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -58,7 +58,7 @@ const Navbar = () => {
             <div className="flex flex-col gap-6 mt-6">
               <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
                 <FileText className="h-6 w-6 text-primary" />
-                <span>FileFlow</span>
+                <span>LinkShyft</span>
               </Link>
               <nav className="flex flex-col gap-4">
                 {navLinks.map((link) => (
