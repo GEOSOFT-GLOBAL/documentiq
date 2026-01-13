@@ -34,7 +34,7 @@ const Hero = () => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <Button asChild size="lg" className="text-lg px-8 py-6">
-            <Link to="/app">
+            <Link to="/auth/signup">
               Get Started Free
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 const APP_SOURCE = "docxiq";
 
 export interface User {
@@ -13,20 +13,7 @@ export interface User {
   avatar?: string;
   role?: string;
   plan?: string;
-}
-
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  isLoading: boolean;
-  error: string | null;
-
-  signup: (data: SignupData) => Promise<void>;
-  signin: (email: string, password: string) => Promise<void>;
-  initiateGoogleAuth: () => Promise<void>;
-  handleGoogleCallback: (code: string) => Promise<void>;
-  logout: () => void;
-  clearError: () => void;
+  registeredApps?: string[];
 }
 
 interface SignupData {
@@ -35,6 +22,27 @@ interface SignupData {
   username: string;
   firstname?: string;
   lastname?: string;
+  linkAccount?: boolean;
+}
+
+export interface AccountLinkPrompt {
+  existingApps: string[];
+  prompt: string;
+}
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isLoading: boolean;
+  error: string | null;
+  accountLinkPrompt: AccountLinkPrompt | null;
+  signup: (data: SignupData) => Promise<void>;
+  signin: (email: string, password: string) => Promise<void>;
+  initiateGoogleAuth: () => Promise<void>;
+  handleGoogleCallback: (code: string) => Promise<void>;
+  logout: () => void;
+  clearError: () => void;
+  clearAccountLinkPrompt: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -44,9 +52,10 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isLoading: false,
       error: null,
+      accountLinkPrompt: null,
 
       signup: async (data: SignupData) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, accountLinkPrompt: null });
         try {
           const res = await fetch(`${API_BASE}/auth/signup`, {
             method: "POST",
@@ -57,6 +66,17 @@ export const useAuthStore = create<AuthState>()(
           const json = await res.json();
 
           if (!res.ok || !json.success) {
+            if (json.code === "ACCOUNT_EXISTS_LINK_PROMPT") {
+              set({
+                isLoading: false,
+                accountLinkPrompt: {
+                  existingApps: json.errorData?.existingApps || [],
+                  prompt:
+                    json.errorData?.prompt || "Account exists. Link accounts?",
+                },
+              });
+              throw new Error("ACCOUNT_LINK_REQUIRED");
+            }
             throw new Error(json.message || "Signup failed");
           }
 
@@ -66,10 +86,12 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           });
         } catch (err) {
-          set({
-            error: err instanceof Error ? err.message : "Signup failed",
-            isLoading: false,
-          });
+          if (err instanceof Error && err.message !== "ACCOUNT_LINK_REQUIRED") {
+            set({
+              error: err.message,
+              isLoading: false,
+            });
+          }
           throw err;
         }
       },
@@ -113,7 +135,6 @@ export const useAuthStore = create<AuthState>()(
             throw new Error(json.message || "Failed to initiate Google auth");
           }
 
-          // Redirect to Google OAuth
           window.location.href = json.data.authUrl;
         } catch (err) {
           set({
@@ -151,11 +172,15 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        set({ user: null, token: null, error: null });
+        set({ user: null, token: null, error: null, accountLinkPrompt: null });
       },
 
       clearError: () => {
         set({ error: null });
+      },
+
+      clearAccountLinkPrompt: () => {
+        set({ accountLinkPrompt: null });
       },
     }),
     {
