@@ -75,7 +75,7 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[calc(100vh-250px)] p-4",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none focus:outline-none min-h-[calc(100vh-250px)] p-4",
       },
     },
   });
