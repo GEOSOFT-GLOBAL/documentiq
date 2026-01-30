@@ -1,216 +1,216 @@
 import { useState } from "react";
-import { Editor, Viewer } from "react-latex-editor";
 import "react-latex-editor/styles";
-import { Copy, Download, Sparkles, Wand2 } from "lucide-react";
-import { copyAsDocx, downloadAsDocx } from "@/utils/export-to-docx";
+import { Sparkles, Wand2, ArrowRightLeft } from "lucide-react";
 import { toast } from "sonner";
-import { aiService } from "@/services/ai.service";
+import { useEquationStore } from "@/store/equationStore";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function EquationEditor() {
   const [content, setContent] = useState("<p>Start typing...</p>");
-  const [isCopying, setIsCopying] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [rawInput, setRawInput] = useState("");
-  const [isFormatting, setIsFormatting] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
+  const [sourceFormat, setSourceFormat] = useState("plaintext");
+  const [targetFormat, setTargetFormat] = useState("latex");
 
-  const handleCopyAsDocx = async () => {
-    setIsCopying(true);
-    try {
-      const success = await copyAsDocx(content);
-      if (success) {
-        toast.success("Copied to clipboard as DOCX!");
-      } else {
-        toast.error("Failed to copy to clipboard");
-      }
-    } catch (error) {
-      toast.error("Error copying to clipboard");
-      console.error(error);
-    } finally {
-      setIsCopying(false);
-    }
-  };
+  const {
+    convertEquation,
+    simplifyEquation,
+    solveEquation,
+    validateEquation,
+    isLoading,
+    error,
+  } = useEquationStore();
 
-  const handleDownloadAsDocx = async () => {
-    setIsDownloading(true);
-    try {
-      const success = await downloadAsDocx(content, "equation-document.docx");
-      if (success) {
-        toast.success("Document downloaded successfully!");
-      } else {
-        toast.error("Failed to download document");
-      }
-    } catch (error) {
-      toast.error("Error downloading document");
-      console.error(error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-  const handleAIFormat = async () => {
+  const handleConvert = async () => {
     if (!rawInput.trim()) {
-      toast.error("Please enter an equation to format");
+      toast.error("Please enter an equation to convert");
       return;
     }
 
-    setIsFormatting(true);
     try {
-      const formatted = await aiService.formatEquation(rawInput);
-      setContent(formatted);
-      toast.success("Equation formatted with AI!");
+      const result = await convertEquation(
+        rawInput,
+        sourceFormat,
+        targetFormat,
+      );
+      setContent(`<p>${result.convertedEquation}</p>`);
+      toast.success(
+        `Equation converted from ${sourceFormat} to ${targetFormat}!`,
+      );
     } catch (error) {
-      toast.error("Failed to format equation");
+      toast.error("Failed to convert equation");
       console.error(error);
-    } finally {
-      setIsFormatting(false);
     }
   };
 
-  const handleAIImprove = async () => {
-    if (!content || content === "<p>Start typing...</p>") {
-      toast.error("Please add some content to improve");
+  const handleSimplify = async () => {
+    if (!rawInput.trim()) {
+      toast.error("Please enter an equation to simplify");
       return;
     }
 
-    setIsImproving(true);
     try {
-      const improved = await aiService.improveEquation(content);
-      setContent(improved);
-      toast.success("Equation improved with AI!");
+      const result = await simplifyEquation(rawInput, true);
+      setContent(`<p>${result.simplifiedEquation}</p>`);
+      toast.success("Equation simplified!");
     } catch (error) {
-      toast.error("Failed to improve equation");
+      toast.error("Failed to simplify equation");
       console.error(error);
-    } finally {
-      setIsImproving(false);
+    }
+  };
+
+  const handleSolve = async () => {
+    if (!rawInput.trim()) {
+      toast.error("Please enter an equation to solve");
+      return;
+    }
+
+    try {
+      const result = await solveEquation(rawInput, undefined, true);
+      setContent(`<p>${result.solution}</p>`);
+      toast.success("Equation solved!");
+    } catch (error) {
+      toast.error("Failed to solve equation");
+      console.error(error);
+    }
+  };
+
+  const handleValidate = async () => {
+    if (!rawInput.trim()) {
+      toast.error("Please enter an equation to validate");
+      return;
+    }
+
+    try {
+      const result = await validateEquation(rawInput, sourceFormat);
+      setContent(`<p>${result.validation}</p>`);
+      toast.success("Equation validated!");
+    } catch (error) {
+      toast.error("Failed to validate equation");
+      console.error(error);
     }
   };
 
   return (
     <div className="h-[calc(100vh-180px)] relative flex flex-col gap-4">
-      {/* AI Formatting Section */}
+      {/* Equation Tools Section */}
       <Card className="p-4 bg-linear-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
         <div className="space-y-3">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="h-5 w-5 text-purple-600" />
-            <h3 className="font-semibold text-sm">AI Equation Formatter</h3>
+            <h3 className="font-semibold text-sm">Equation Tools</h3>
           </div>
+
           <Textarea
-            placeholder="Paste your equation here (e.g., 'x squared plus 2x plus 1', 'integral of x dx', 'sum from i=1 to n of i squared')..."
+            placeholder="Enter your equation (e.g., 'x^2 + 2x + 1', 'integral of x dx', LaTeX code, etc.)..."
             value={rawInput}
             onChange={(e) => setRawInput(e.target.value)}
             className="min-h-[80px] text-sm"
           />
+
+          <div className="flex gap-2 items-center flex-wrap">
+            <Select value={sourceFormat} onValueChange={setSourceFormat}>
+              <SelectTrigger className="w-[140px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="latex">LaTeX</SelectItem>
+                <SelectItem value="mathml">MathML</SelectItem>
+                <SelectItem value="asciimath">AsciiMath</SelectItem>
+                <SelectItem value="unicode">Unicode</SelectItem>
+                <SelectItem value="plaintext">Plain Text</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+
+            <Select value={targetFormat} onValueChange={setTargetFormat}>
+              <SelectTrigger className="w-[140px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="latex">LaTeX</SelectItem>
+                <SelectItem value="mathml">MathML</SelectItem>
+                <SelectItem value="asciimath">AsciiMath</SelectItem>
+                <SelectItem value="unicode">Unicode</SelectItem>
+                <SelectItem value="plaintext">Plain Text</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex gap-2 flex-wrap">
             <Button
-              onClick={handleAIFormat}
-              disabled={isFormatting || !rawInput.trim()}
+              onClick={handleConvert}
+              disabled={isLoading || !rawInput.trim()}
               size="sm"
               className="gap-2"
             >
-              {isFormatting ? (
+              {isLoading ? (
                 <>
-                  <Sparkles className="h-4 w-4 animate-spin" />
-                  Formatting...
+                  <ArrowRightLeft className="h-4 w-4 animate-pulse" />
+                  Converting...
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4" />
-                  Format with AI
+                  <ArrowRightLeft className="h-4 w-4" />
+                  Convert
                 </>
               )}
             </Button>
+
             <Button
-              onClick={handleAIImprove}
-              disabled={isImproving}
+              onClick={handleSimplify}
+              disabled={isLoading || !rawInput.trim()}
               variant="outline"
               size="sm"
               className="gap-2"
             >
-              {isImproving ? (
-                <>
-                  <Wand2 className="h-4 w-4 animate-pulse" />
-                  Improving...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="h-4 w-4" />
-                  Improve Current
-                </>
-              )}
+              <Wand2 className="h-4 w-4" />
+              Simplify
+            </Button>
+
+            <Button
+              onClick={handleSolve}
+              disabled={isLoading || !rawInput.trim()}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Solve
+            </Button>
+
+            <Button
+              onClick={handleValidate}
+              disabled={isLoading || !rawInput.trim()}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              Validate
             </Button>
           </div>
+
+          {error && (
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          )}
         </div>
       </Card>
 
       {/* Editor */}
       <div className="flex-1 min-h-0">
-        <Editor
-          placeholder="Or type LaTeX directly here..."
-          initialContent={content}
-          onChange={setContent}
-          className="h-full text-black"
-        />
-      </div>
-
-      {/* Floating Viewer */}
-      <div className="fixed bottom-4 right-4 w-[400px] max-w-[calc(100vw-2rem)] h-[400px] max-h-[50vh] bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-2xl overflow-hidden z-50 flex flex-col">
-        <div className="bg-gray-800 text-white px-4 py-2 font-semibold flex items-center justify-between">
-          <span>Preview</span>
-          <div className="flex gap-2">
-            <button
-              onClick={handleCopyAsDocx}
-              disabled={isCopying}
-              className="flex items-center gap-1.5 px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 rounded text-sm transition-colors"
-              title="Copy to clipboard as DOCX"
-            >
-              {isCopying ? (
-                <>
-                  <Copy className="w-4 h-4 animate-pulse" />
-                  Copying...
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  Copy
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleDownloadAsDocx}
-              disabled={isDownloading}
-              className="flex items-center gap-1.5 px-3 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded text-sm transition-colors"
-              title="Download as DOCX file"
-            >
-              {isDownloading ? (
-                <>
-                  <Download className="w-4 h-4 animate-bounce" />
-                  Downloading...
-                </>
-              ) : (
-                <>
-                  <Download className="w-4 h-4" />
-                  Download
-                </>
-              )}
-            </button>
+        <div className="h-full border rounded-lg p-4 bg-white dark:bg-gray-900">
+          <div className="prose dark:prose-invert max-w-none">
+            <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
-        </div>
-        <div className="p-4 overflow-auto flex-1">
-          <Viewer
-            content={content}
-            className="my-viewer"
-            contentClassName="custom-content"
-            enableMath={true}
-            mathJaxConfig={{
-              inlineMath: [["$", "$"]],
-              displayMath: [["$$", "$$"]],
-              packages: ["base", "ams"],
-            }}
-          />
         </div>
       </div>
     </div>
