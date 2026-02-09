@@ -51,7 +51,7 @@ import {
 const CitationGenerator = () => {
   const { generateContent, loading, error } = useGemini();
   const [activeTab, setActiveTab] = useState<"create" | "auto" | "convert">(
-    "create"
+    "create",
   );
 
   // Create tab state
@@ -135,9 +135,9 @@ const CitationGenerator = () => {
       try {
         const sourceInfo = buildSourceInfo();
         const prompt = `Generate a citation in ${getStyleName(
-          citationStyle
+          citationStyle,
         )} format for the following source:\n\nSource Type: ${sourceType}\n${sourceInfo}\n\nPlease provide ONLY the formatted citation, nothing else. Follow ${getStyleName(
-          citationStyle
+          citationStyle,
         )} guidelines exactly.`;
         formattedCitation = (
           await generateContent({ prompt, type: PromptType.CONVERTER })
@@ -146,7 +146,7 @@ const CitationGenerator = () => {
         toast.error(
           `Failed to generate citation: ${
             err instanceof Error ? err.message : "Unknown error"
-          }`
+          }`,
         );
         return;
       }
@@ -154,7 +154,7 @@ const CitationGenerator = () => {
       formattedCitation = formatManualCitation(
         currentCitation,
         sourceType,
-        citationStyle
+        citationStyle,
       );
     }
 
@@ -283,7 +283,7 @@ const CitationGenerator = () => {
     const formattedCitation = generateCitationFromDocument(
       documentContent,
       documentName,
-      autoStyle
+      autoStyle,
     );
     setAutoCitation(formattedCitation);
     toast.success("Manual citation generated!");
@@ -298,7 +298,7 @@ const CitationGenerator = () => {
 
     try {
       const prompt = `Based on the following document information, extract metadata and generate a citation in ${getStyleName(
-        autoStyle
+        autoStyle,
       )} format.
 
 Document Name: ${documentName}
@@ -324,7 +324,7 @@ Output ONLY the formatted citation, nothing else.`;
       toast.error(
         `Failed to generate citation: ${
           err instanceof Error ? err.message : "Unknown error"
-        }`
+        }`,
       );
     }
   };
@@ -349,7 +349,7 @@ Output ONLY the formatted citation, nothing else.`;
 
     try {
       const prompt = `Generate a citation in ${getStyleName(
-        autoStyle
+        autoStyle,
       )} format for the following URL:
 
 URL: ${urlInput}
@@ -372,7 +372,7 @@ Output ONLY the formatted citation, nothing else.`;
       toast.error(
         `Failed to generate citation: ${
           err instanceof Error ? err.message : "Unknown error"
-        }`
+        }`,
       );
     }
   };
@@ -406,13 +406,13 @@ Output ONLY the formatted citation, nothing else.`;
     }
     try {
       const prompt = `Convert the following citations from ${getStyleName(
-        sourceStyle
+        sourceStyle,
       )} format to ${getStyleName(
-        targetStyle
+        targetStyle,
       )} format.\n\nInput Citations (${getStyleName(
-        sourceStyle
+        sourceStyle,
       )}):\n${inputCitations}\n\nPlease convert each citation to ${getStyleName(
-        targetStyle
+        targetStyle,
       )} format. Maintain the same order. Output ONLY the converted citations, one per line, with no additional text or explanations.`;
       const result = await generateContent({
         prompt,
@@ -424,7 +424,7 @@ Output ONLY the formatted citation, nothing else.`;
       toast.error(
         `Failed to convert citations: ${
           err instanceof Error ? err.message : "Unknown error"
-        }`
+        }`,
       );
     }
   };
