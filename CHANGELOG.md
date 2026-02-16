@@ -8,22 +8,17 @@ All notable changes to this project will be documented in this file.
 
 #### API Integration (2024)
 
-- **API Service Layer** (`src/services/api.service.ts`)
-  - Centralized API communication with backend service
-  - Type-safe request/response interfaces
-  - Automatic error handling and formatting
-  - Support for summarization endpoints
+- **Zustand Stores for API Integration**
+  - `useSummarizerStore` (`src/store/summarizerStore.ts`)
+    - Centralized state management for text summarization
+    - Integrates with backend summarization endpoint
+    - Built-in loading and error states
+  - `useCitationStore` (`src/store/citationStore.ts`)
+    - State management for citation generation features
+    - Support for multiple citation generation methods
+    - Citation format conversion support
 
-- **Custom Hooks**
-  - `useSummarizer` hook (`src/hooks/useSummarizer.ts`)
-  - Provides clean interface for text summarization
-  - Built-in loading and error states
-  - Success and error callbacks support
 
-- **Documentation**
-  - Comprehensive API integration guide (`docs/API_INTEGRATION.md`)
-  - Migration instructions for other features
-  - Testing procedures and examples
 
 ### Changed
 
@@ -43,6 +38,20 @@ All notable changes to this project will be documented in this file.
   - Moved sensitive keys to backend service
   - Reduced client-side attack surface
 
+#### Citation Generator Feature
+
+- **Updated Citation Generator Component** (`src/views/citation-generator.tsx`)
+  - Migrated from direct Gemini API calls to backend service API
+  - Replaced `useGemini` hook with `useCitationStore` hook
+  - Integrated four backend endpoints:
+    - Generate citation from source info
+    - Generate citation from document
+    - Generate citation from URL
+    - Convert citations between formats
+  - Removed client-side prompt construction
+  - Maintained all existing UI/UX functionality
+  - Improved error handling with store-based state management
+
 ### Improved
 
 - **Architecture**
@@ -58,15 +67,24 @@ All notable changes to this project will be documented in this file.
 
 ### Technical Details
 
-**Backend Integration:**
+**Backend Integration - Summarizer:**
 - Endpoint: `POST /api/v1/docxiq/research/summarize`
 - Controller: `ResearchSupportController.summarizeText`
 - Route: `/docxiq/research/summarize`
 
+**Backend Integration - Citation Generator:**
+- Endpoint: `POST /api/v1/docxiq/research/citation/generate`
+- Endpoint: `POST /api/v1/docxiq/research/citation/from-document`
+- Endpoint: `POST /api/v1/docxiq/research/citation/from-url`
+- Endpoint: `POST /api/v1/docxiq/research/citation/convert`
+- Controller: `ResearchSupportController` (multiple methods)
+- Routes: `/docxiq/research/citation/*`
+
 **Frontend Changes:**
-- New service layer for API calls
-- Custom hook for feature-specific logic
+- Zustand store-based state management
 - Type-safe interfaces throughout
+- Centralized API communication logic
+- Consistent error handling across features
 - Maintained backward compatibility with UI
 
 **Environment Variables:**
@@ -77,9 +95,10 @@ All notable changes to this project will be documented in this file.
 
 - **Breaking Changes:** None for end users
 - **Developer Changes:** 
-  - Must run backend service for summarizer to work
+  - Must run backend service for summarizer and citation generator to work
   - Update `.env` with `VITE_API_URL` if using custom backend URL
-  - `useGemini` hook deprecated for summarizer (still available for other features)
+  - `useGemini` hook deprecated for summarizer and citation generator (still available for other features)
+  - Follow Zustand store pattern for future API integrations
 
 ### Future Enhancements
 
@@ -93,7 +112,7 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 
-This update represents Phase 1 of migrating all AI features to the backend service. The Summarizer serves as the proof-of-concept for this architectural change. Other features (Paraphraser, Converter, etc.) will follow the same pattern in future updates.
+This update represents Phase 1-2 of migrating all AI features to the backend service. The Summarizer and Citation Generator serve as proof-of-concept for this architectural change using Zustand stores for state management. Other features (Paraphraser, Keyword Extractor, etc.) will follow the same pattern in future updates.
 
 ---
 

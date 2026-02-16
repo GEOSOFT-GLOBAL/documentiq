@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGemini, PromptType } from "@/hooks/useGemini";
+import { useCitationStore } from "@/store/citationStore";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -49,7 +49,15 @@ import {
 } from "@/utils/citation-extractor";
 
 const CitationGenerator = () => {
-  const { generateContent, loading, error } = useGemini();
+  const {
+    generateCitation,
+    generateCitationFromDocument: generateCitationFromDocumentAPI,
+    generateCitationFromURL: generateCitationFromURLAPI,
+    convertCitations: convertCitationsAPI,
+    isLoading,
+    error,
+    clearError,
+  } = useCitationStore();
   const [activeTab, setActiveTab] = useState<"create" | "auto" | "convert">(
     "create",
   );
@@ -134,14 +142,13 @@ const CitationGenerator = () => {
     if (useAI) {
       try {
         const sourceInfo = buildSourceInfo();
-        const prompt = `Generate a citation in ${getStyleName(
+        const result = await generateCitation({
+          sourceType,
           citationStyle,
-        )} format for the following source:\n\nSource Type: ${sourceType}\n${sourceInfo}\n\nPlease provide ONLY the formatted citation, nothing else. Follow ${getStyleName(
-          citationStyle,
-        )} guidelines exactly.`;
-        formattedCitation = (
-          await generateContent({ prompt, type: PromptType.CONVERTER })
-        ).trim();
+          sourceInfo,
+          useAI: true,
+        });
+        formattedCitation = result.citation.trim();
       } catch (err) {
         toast.error(
           `Failed to generate citation: ${
@@ -297,28 +304,13 @@ const CitationGenerator = () => {
     }
 
     try {
-      const prompt = `Based on the following document information, extract metadata and generate a citation in ${getStyleName(
-        autoStyle,
-      )} format.
-
-Document Name: ${documentName}
-Document Content (excerpt):
-${documentContent.slice(0, 3000)}
-
-Please:
-1. Extract or infer: Author(s), Title, Year, Publisher (if applicable)
-2. Determine the source type (book, article, report, etc.)
-3. Generate a properly formatted ${getStyleName(autoStyle)} citation
-
-If information is missing, make reasonable inferences from the content or use [Unknown] placeholders.
-
-Output ONLY the formatted citation, nothing else.`;
-
-      const result = await generateContent({
-        prompt,
-        type: PromptType.CONVERTER,
+      const result = await generateCitationFromDocumentAPI({
+        documentContent,
+        documentName,
+        citationStyle: autoStyle,
+        pdfMetadata: pdfMetadata || undefined,
       });
-      setAutoCitation(result.trim());
+      setAutoCitation(result.citation.trim());
       toast.success("Citation generated from document!");
     } catch (err) {
       toast.error(
@@ -348,25 +340,11 @@ Output ONLY the formatted citation, nothing else.`;
     }
 
     try {
-      const prompt = `Generate a citation in ${getStyleName(
-        autoStyle,
-      )} format for the following URL:
-
-URL: ${urlInput}
-
-Please:
-1. Infer the source type (website, online article, video, etc.)
-2. Extract or infer: Author/Organization, Title, Website Name, Publication Date
-3. Include the access date as today's date
-4. Generate a properly formatted ${getStyleName(autoStyle)} citation
-
-Output ONLY the formatted citation, nothing else.`;
-
-      const result = await generateContent({
-        prompt,
-        type: PromptType.CONVERTER,
+      const result = await generateCitationFromURLAPI({
+        url: urlInput,
+        citationStyle: autoStyle,
       });
-      setAutoCitation(result.trim());
+      setAutoCitation(result.citation.trim());
       toast.success("Citation generated from URL!");
     } catch (err) {
       toast.error(
@@ -405,20 +383,12 @@ Output ONLY the formatted citation, nothing else.`;
       return;
     }
     try {
-      const prompt = `Convert the following citations from ${getStyleName(
+      const result = await convertCitationsAPI({
+        citations: inputCitations,
         sourceStyle,
-      )} format to ${getStyleName(
         targetStyle,
-      )} format.\n\nInput Citations (${getStyleName(
-        sourceStyle,
-      )}):\n${inputCitations}\n\nPlease convert each citation to ${getStyleName(
-        targetStyle,
-      )} format. Maintain the same order. Output ONLY the converted citations, one per line, with no additional text or explanations.`;
-      const result = await generateContent({
-        prompt,
-        type: PromptType.CONVERTER,
       });
-      setConvertedCitations(result.trim());
+      setConvertedCitations(result.convertedCitations.trim());
       toast.success("Citations converted!");
     } catch (err) {
       toast.error(
@@ -446,6 +416,7 @@ Output ONLY the formatted citation, nothing else.`;
     setDocumentName("");
     setAutoCitation("");
     setPdfMetadata(null);
+    clearError();
     toast.info("Form cleared");
   };
 
@@ -454,6 +425,7 @@ Output ONLY the formatted citation, nothing else.`;
     setCurrentCitation({});
     setInputCitations("");
     setConvertedCitations("");
+    clearError();
     toast.info("All cleared");
   };
 
@@ -510,9 +482,9 @@ Output ONLY the formatted citation, nothing else.`;
                 <div className="flex gap-2 pt-4">
                   <Button
                     onClick={handleGenerateCitation}
-                    disabled={loading && useAI}
+                    disabled={isLoading && useAI}
                   >
-                    {loading && useAI ? (
+                    {isLoading && useAI ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Generating...
@@ -562,7 +534,7 @@ Output ONLY the formatted citation, nothing else.`;
                   </p>
                   <Button variant="outline" asChild disabled={loadingPdf}>
                     <label htmlFor="doc-upload" className="cursor-pointer">
-                      {loadingPdf ? (
+                      {isLoading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Extracting...
@@ -677,11 +649,11 @@ Output ONLY the formatted citation, nothing else.`;
                   </Button>
                   <Button
                     onClick={handleGenerateFromDocument}
-                    disabled={loading || !documentName}
+                    disabled={isLoading || !documentName}
                     variant="outline"
                     className="w-full"
                   >
-                    {loading ? (
+                    {isLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Generating...
@@ -729,11 +701,11 @@ Output ONLY the formatted citation, nothing else.`;
                   </Button>
                   <Button
                     onClick={handleGenerateFromURL}
-                    disabled={loading || !urlInput.trim()}
+                    disabled={isLoading || !urlInput.trim()}
                     variant="outline"
                     className="w-full"
                   >
-                    {loading ? (
+                    {isLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Generating...
@@ -839,9 +811,9 @@ Output ONLY the formatted citation, nothing else.`;
               <div className="flex gap-2">
                 <Button
                   onClick={handleConvertCitations}
-                  disabled={loading || !inputCitations.trim()}
+                  disabled={isLoading || !inputCitations.trim()}
                 >
-                  {loading ? (
+                  {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Converting...
