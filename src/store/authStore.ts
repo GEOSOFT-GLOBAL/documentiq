@@ -128,7 +128,7 @@ export const useAuthStore = create<AuthState>()(
       initiateGoogleAuth: async () => {
         set({ isLoading: true, error: null });
         try {
-          const res = await fetch(`${API_BASE}/auth/google`);
+          const res = await fetch(`${API_BASE}/auth/google?appSource=${APP_SOURCE}`);
           const json = await res.json();
 
           if (!res.ok || !json.success) {
@@ -172,7 +172,7 @@ export const useAuthStore = create<AuthState>()(
             code,
             appSource: APP_SOURCE,
           });
-          
+
           if (state) {
             params.append('state', state);
           }
