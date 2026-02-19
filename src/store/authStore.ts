@@ -39,7 +39,7 @@ interface AuthState {
   signup: (data: SignupData) => Promise<void>;
   signin: (email: string, password: string) => Promise<void>;
   initiateGoogleAuth: () => Promise<void>;
-  handleGoogleCallback: (code: string) => Promise<void>;
+  handleGoogleCallback: (code: string, state?: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
   clearAccountLinkPrompt: () => void;
@@ -135,6 +135,11 @@ export const useAuthStore = create<AuthState>()(
             throw new Error(json.message || "Failed to initiate Google auth");
           }
 
+          // Store state in session storage for CSRF protection
+          if (json.data.state) {
+            sessionStorage.setItem('oauth_state', json.data.state);
+          }
+
           window.location.href = json.data.authUrl;
         } catch (err) {
           set({
@@ -145,11 +150,35 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      handleGoogleCallback: async (code: string) => {
+      handleGoogleCallback: async (code: string, state?: string) => {
         set({ isLoading: true, error: null });
         try {
+          // Validate state parameter for CSRF protection
+          const storedState = sessionStorage.getItem('oauth_state');
+          if (storedState) {
+            // If we have a stored state, the callback must include it
+            if (!state) {
+              throw new Error("Missing state parameter. Possible CSRF attack.");
+            }
+            if (state !== storedState) {
+              throw new Error("Invalid state parameter. Possible CSRF attack.");
+            }
+            // Clear stored state after validation
+            sessionStorage.removeItem('oauth_state');
+          }
+
+          // Build query parameters
+          const params = new URLSearchParams({
+            code,
+            appSource: APP_SOURCE,
+          });
+          
+          if (state) {
+            params.append('state', state);
+          }
+
           const res = await fetch(
-            `${API_BASE}/auth/google/callback?code=${encodeURIComponent(code)}&appSource=${APP_SOURCE}`
+            `${API_BASE}/auth/google/callback?${params.toString()}`
           );
           const json = await res.json();
 
