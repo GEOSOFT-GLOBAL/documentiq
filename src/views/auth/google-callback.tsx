@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 
@@ -8,6 +8,8 @@ const GoogleCallback = () => {
   const { handleGoogleCallback, isLoading, error, clearError } = useAuthStore();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const processedRef = useRef(false);
 
   useEffect(() => {
     const processGoogleCallback = async () => {
@@ -24,11 +26,15 @@ const GoogleCallback = () => {
           throw new Error("No authorization code received from Google");
         }
 
+        // Prevent double execution in React Strict Mode
+        if (processedRef.current) return;
+        processedRef.current = true;
+
         // Use the auth store to handle the callback with state validation
         await handleGoogleCallback(code, state || undefined);
-        
+
         setStatus("success");
-        
+
         // Redirect to app after 2 seconds
         setTimeout(() => {
           navigate("/app");
@@ -37,7 +43,7 @@ const GoogleCallback = () => {
         console.error("Google callback error:", error);
         setStatus("error");
         setErrorMessage(error.message || "An unexpected error occurred during authentication");
-        
+
         // Redirect to login after 5 seconds on error
         setTimeout(() => {
           navigate("/auth/login");
