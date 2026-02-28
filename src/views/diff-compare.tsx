@@ -251,10 +251,10 @@ const user = {
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Text Diff & Compare</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Text Diff & Compare</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Compare two texts side-by-side and visualize the differences
         </p>
       </div>
@@ -295,23 +295,25 @@ const user = {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <Tabs
           value={viewMode}
           onValueChange={(v) => setViewMode(v as ViewMode)}
+          className="w-full sm:w-auto overflow-x-auto"
         >
-          <TabsList>
-            <TabsTrigger value="side-by-side">
-              <GitCompare className="h-4 w-4 mr-2" />
-              Side by Side
+          <TabsList className="flex w-full sm:w-auto">
+            <TabsTrigger value="side-by-side" className="flex-shrink-0">
+              <GitCompare className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="text-xs sm:text-sm">Side by Side</span>
             </TabsTrigger>
-            <TabsTrigger value="unified">Unified View</TabsTrigger>
+            <TabsTrigger value="unified" className="flex-shrink-0">Unified</TabsTrigger>
           </TabsList>
         </Tabs>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <Button onClick={loadExample} variant="outline" size="sm">
-            Load Example
+            <span className="hidden sm:inline">Load Example</span>
+            <span className="sm:hidden">Example</span>
           </Button>
           <Button onClick={handleSwap} variant="outline" size="sm">
             <ArrowLeftRight className="h-4 w-4 mr-2" />
@@ -327,8 +329,8 @@ const user = {
             size="sm"
             disabled={!leftText && !rightText}
           >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy Diff
+            <Copy className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Copy Diff</span>
           </Button>
           <Button
             onClick={handleDownloadDiff}
@@ -336,8 +338,8 @@ const user = {
             size="sm"
             disabled={!leftText && !rightText}
           >
-            <Download className="h-4 w-4 mr-2" />
-            Download
+            <Download className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Download</span>
           </Button>
         </div>
       </div>
@@ -345,7 +347,7 @@ const user = {
       {(leftText || rightText) && (
         <Card className="mb-4">
           <CardContent className="pt-6">
-            <div className="flex gap-6 text-sm">
+            <div className="flex flex-wrap gap-3 sm:gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-green-500 rounded"></div>
                 <span>Added: {stats.added}</span>
@@ -367,7 +369,7 @@ const user = {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Original Text</Label>
@@ -388,7 +390,7 @@ const user = {
           <textarea
             value={leftText}
             onChange={(e) => setLeftText(e.target.value)}
-            className="w-full h-32 p-3 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full h-32 sm:h-48 p-3 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Paste or type original text here..."
           />
         </div>
@@ -413,14 +415,14 @@ const user = {
           <textarea
             value={rightText}
             onChange={(e) => setRightText(e.target.value)}
-            className="w-full h-32 p-3 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full h-32 sm:h-48 p-3 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Paste or type modified text here..."
           />
         </div>
       </div>
 
       {viewMode === "side-by-side" ? (
-        <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
           <div className="flex flex-col">
             <Label className="mb-2">Diff View - Original</Label>
             <div className="flex-1 border rounded-md overflow-auto">
