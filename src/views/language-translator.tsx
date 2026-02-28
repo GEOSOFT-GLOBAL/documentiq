@@ -228,10 +228,10 @@ const LanguageTranslator = () => {
   const charCount = input.length;
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Language Translator</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Language Translator</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Translate text between 35+ languages using MyMemory API
         </p>
       </div>
@@ -243,8 +243,8 @@ const LanguageTranslator = () => {
           <CardDescription>Select source and target languages</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="flex-1 space-y-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex-1 w-full sm:w-auto space-y-2">
               <Label>Source Language</Label>
               <Select value={sourceLang} onValueChange={setSourceLang}>
                 <SelectTrigger>
@@ -264,12 +264,12 @@ const LanguageTranslator = () => {
               variant="outline"
               size="icon"
               onClick={handleSwapLanguages}
-              className="mt-6"
+              className="mt-0 sm:mt-6"
             >
               <ArrowRightLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 w-full sm:w-auto space-y-2">
               <Label>Target Language</Label>
               <Select value={targetLang} onValueChange={setTargetLang}>
                 <SelectTrigger>
@@ -289,7 +289,7 @@ const LanguageTranslator = () => {
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button onClick={handleTranslate} disabled={loading || !input.trim()}>
           {loading ? (
             <>
@@ -306,7 +306,8 @@ const LanguageTranslator = () => {
         <Button variant="outline" asChild>
           <label className="cursor-pointer">
             <Upload className="h-4 w-4 mr-2" />
-            Upload File
+            <span className="hidden sm:inline">Upload File</span>
+            <span className="sm:hidden">Upload</span>
             <input
               type="file"
               accept=".txt,.md,text/*"
@@ -346,7 +347,7 @@ const LanguageTranslator = () => {
       )}
 
       {/* Text Areas */}
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <Label>Source Text ({getLanguageName(sourceLang)})</Label>
@@ -368,7 +369,7 @@ const LanguageTranslator = () => {
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
             placeholder="Enter text to translate..."
           />
         </div>
@@ -389,7 +390,7 @@ const LanguageTranslator = () => {
           <Textarea
             value={output}
             onChange={(e) => setOutput(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
             placeholder="Translation will appear here..."
           />
         </div>

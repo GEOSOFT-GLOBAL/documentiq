@@ -793,7 +793,7 @@ const CitationGenerator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-3 gap-4 items-end">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                 <StyleSelector
                   value={sourceStyle}
                   onChange={setSourceStyle}
@@ -841,7 +841,7 @@ const CitationGenerator = () => {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">
                 Input Citations ({getStyleName(sourceStyle)})
