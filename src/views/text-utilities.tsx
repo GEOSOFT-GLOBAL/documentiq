@@ -259,39 +259,39 @@ const TextUtilities = () => {
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Text Utilities</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Text Utilities</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Powerful text manipulation and analysis tools
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="mb-4">
-          <TabsTrigger value="case">
-            <Type className="h-4 w-4 mr-2" />
-            Case Converter
+        <TabsList className="mb-4 flex flex-wrap w-full">
+          <TabsTrigger value="case" className="flex-shrink-0">
+            <Type className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Case</span>
           </TabsTrigger>
-          <TabsTrigger value="clean">
-            <Eraser className="h-4 w-4 mr-2" />
-            Text Cleaner
+          <TabsTrigger value="clean" className="flex-shrink-0">
+            <Eraser className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Clean</span>
           </TabsTrigger>
-          <TabsTrigger value="stats">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Statistics
+          <TabsTrigger value="stats" className="flex-shrink-0">
+            <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Stats</span>
           </TabsTrigger>
-          <TabsTrigger value="find">
-            <Search className="h-4 w-4 mr-2" />
-            Find & Replace
+          <TabsTrigger value="find" className="flex-shrink-0">
+            <Search className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Find</span>
           </TabsTrigger>
-          <TabsTrigger value="sort">
-            <ArrowUpDown className="h-4 w-4 mr-2" />
-            Line Sorter
+          <TabsTrigger value="sort" className="flex-shrink-0">
+            <ArrowUpDown className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Sort</span>
           </TabsTrigger>
-          <TabsTrigger value="duplicate">
-            <Trash2 className="h-4 w-4 mr-2" />
-            Remove Duplicates
+          <TabsTrigger value="duplicate" className="flex-shrink-0">
+            <Trash2 className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Dedup</span>
           </TabsTrigger>
         </TabsList>
 
@@ -321,7 +321,7 @@ const TextUtilities = () => {
             </CardContent>
           </Card>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Button onClick={convertCase} disabled={!text}>
               Convert
             </Button>
@@ -330,7 +330,7 @@ const TextUtilities = () => {
               Reset
             </Button>
             <Button onClick={handleUseOutput} variant="outline" disabled={!output}>
-              Use Output as Input
+              Use Output
             </Button>
             <Button onClick={handleCopy} variant="outline" disabled={!output}>
               <Copy className="h-4 w-4 mr-2" />
@@ -342,13 +342,13 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">Input Text</Label>
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 resize-none font-mono text-sm"
+                className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
                 placeholder="Enter your text here..."
               />
             </div>
@@ -357,7 +357,7 @@ const TextUtilities = () => {
               <Textarea
                 value={output}
                 readOnly
-                className="flex-1 resize-none font-mono text-sm bg-muted"
+                className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
                 placeholder="Converted text will appear here..."
               />
             </div>
@@ -399,7 +399,7 @@ const TextUtilities = () => {
             </CardContent>
           </Card>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Button onClick={cleanText} disabled={!text}>
               Clean Text
             </Button>
@@ -408,7 +408,7 @@ const TextUtilities = () => {
               Reset
             </Button>
             <Button onClick={handleUseOutput} variant="outline" disabled={!output}>
-              Use Output as Input
+              Use Output
             </Button>
             <Button onClick={handleCopy} variant="outline" disabled={!output}>
               <Copy className="h-4 w-4 mr-2" />
@@ -420,13 +420,13 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">Input Text</Label>
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 resize-none font-mono text-sm"
+                className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
                 placeholder="Enter your text here..."
               />
             </div>
@@ -435,7 +435,7 @@ const TextUtilities = () => {
               <Textarea
                 value={output}
                 readOnly
-                className="flex-1 resize-none font-mono text-sm bg-muted"
+                className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
                 placeholder="Cleaned text will appear here..."
               />
             </div>
@@ -444,7 +444,7 @@ const TextUtilities = () => {
 
         {/* Statistics Tab */}
         <TabsContent value="stats" className="flex-1 flex flex-col">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-2 sm:gap-4 mb-4">
             <Card>
               <CardHeader className="pb-3">
                 <CardDescription>Characters</CardDescription>
@@ -504,7 +504,7 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 min-h-[150px] sm:min-h-0">
             <Label className="mb-2">Input Text</Label>
             <Textarea
               value={text}
@@ -523,7 +523,7 @@ const TextUtilities = () => {
               <CardDescription>Search and replace text with optional regex support</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="find">Find</Label>
                   <Input
@@ -543,7 +543,7 @@ const TextUtilities = () => {
                   />
                 </div>
               </div>
-              <div className="flex gap-6">
+              <div className="flex flex-wrap gap-4 sm:gap-6">
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="regex"
@@ -564,7 +564,7 @@ const TextUtilities = () => {
             </CardContent>
           </Card>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Button onClick={findAndReplace} disabled={!text || !findText}>
               Replace All
             </Button>
@@ -573,7 +573,7 @@ const TextUtilities = () => {
               Reset
             </Button>
             <Button onClick={handleUseOutput} variant="outline" disabled={!output}>
-              Use Output as Input
+              Use Output
             </Button>
             <Button onClick={handleCopy} variant="outline" disabled={!output}>
               <Copy className="h-4 w-4 mr-2" />
@@ -585,13 +585,13 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">Input Text</Label>
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 resize-none font-mono text-sm"
+                className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
                 placeholder="Enter your text here..."
               />
             </div>
@@ -600,7 +600,7 @@ const TextUtilities = () => {
               <Textarea
                 value={output}
                 readOnly
-                className="flex-1 resize-none font-mono text-sm bg-muted"
+                className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
                 placeholder="Result will appear here..."
               />
             </div>
@@ -629,7 +629,7 @@ const TextUtilities = () => {
             </CardContent>
           </Card>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Button onClick={sortLines} disabled={!text}>
               Sort Lines
             </Button>
@@ -638,7 +638,7 @@ const TextUtilities = () => {
               Reset
             </Button>
             <Button onClick={handleUseOutput} variant="outline" disabled={!output}>
-              Use Output as Input
+              Use Output
             </Button>
             <Button onClick={handleCopy} variant="outline" disabled={!output}>
               <Copy className="h-4 w-4 mr-2" />
@@ -650,13 +650,13 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">Input Text</Label>
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 resize-none font-mono text-sm"
+                className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
                 placeholder="Enter lines to sort..."
               />
             </div>
@@ -665,7 +665,7 @@ const TextUtilities = () => {
               <Textarea
                 value={output}
                 readOnly
-                className="flex-1 resize-none font-mono text-sm bg-muted"
+                className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
                 placeholder="Sorted lines will appear here..."
               />
             </div>
@@ -683,7 +683,7 @@ const TextUtilities = () => {
             </CardHeader>
           </Card>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Button onClick={removeDuplicates} disabled={!text}>
               Remove Duplicates
             </Button>
@@ -692,7 +692,7 @@ const TextUtilities = () => {
               Reset
             </Button>
             <Button onClick={handleUseOutput} variant="outline" disabled={!output}>
-              Use Output as Input
+              Use Output
             </Button>
             <Button onClick={handleCopy} variant="outline" disabled={!output}>
               <Copy className="h-4 w-4 mr-2" />
@@ -704,13 +704,13 @@ const TextUtilities = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
             <div className="flex flex-col">
               <Label className="mb-2">Input Text</Label>
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 resize-none font-mono text-sm"
+                className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
                 placeholder="Enter text with duplicate lines..."
               />
             </div>
@@ -719,7 +719,7 @@ const TextUtilities = () => {
               <Textarea
                 value={output}
                 readOnly
-                className="flex-1 resize-none font-mono text-sm bg-muted"
+                className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
                 placeholder="Unique lines will appear here..."
               />
             </div>
