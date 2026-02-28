@@ -127,7 +127,7 @@ const Dashboard = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <Card>
           <CardHeader className="pb-2 p-3 sm:p-6">
             <CardDescription className="text-xs sm:text-sm">
@@ -161,10 +161,10 @@ const Dashboard = () => {
         <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
           All Tools
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool) => (
             <Link key={tool.path} to={tool.path}>
-              <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group">
+              <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group min-h-[140px] sm:min-h-[150px]">
                 <CardContent className="p-3 sm:p-4">
                   <div
                     className={`inline-flex p-2 rounded-lg ${tool.bgColor} mb-2 sm:mb-3`}
