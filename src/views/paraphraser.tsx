@@ -126,10 +126,10 @@ const Paraphraser = () => {
   const outputWordCount = output.trim() ? output.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">AI Text Paraphraser</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">AI Text Paraphraser</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Rewrite, summarize, or expand your text with AI-powered assistance
         </p>
       </div>
@@ -137,20 +137,20 @@ const Paraphraser = () => {
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as typeof activeTab)}
-        className="mb-4"
+        className="mb-4 overflow-x-auto"
       >
-        <TabsList>
-          <TabsTrigger value="paraphrase">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Paraphrase
+        <TabsList className="flex w-full sm:w-auto">
+          <TabsTrigger value="paraphrase" className="flex-shrink-0">
+            <Sparkles className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Paraphrase</span>
           </TabsTrigger>
-          <TabsTrigger value="summarize">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Summarize
+          <TabsTrigger value="summarize" className="flex-shrink-0">
+            <Sparkles className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Summarize</span>
           </TabsTrigger>
-          <TabsTrigger value="expand">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Expand
+          <TabsTrigger value="expand" className="flex-shrink-0">
+            <Sparkles className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Expand</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -161,7 +161,7 @@ const Paraphraser = () => {
           <CardDescription>Customize the output style and tone</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="tone">Tone</Label>
               <Select
@@ -198,7 +198,7 @@ const Paraphraser = () => {
         </CardContent>
       </Card>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button onClick={handleGenerate} disabled={loading || !input.trim()}>
           {loading ? (
             <>
@@ -235,7 +235,7 @@ const Paraphraser = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <Label>Input Text</Label>
@@ -246,7 +246,7 @@ const Paraphraser = () => {
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
             placeholder="Enter or paste your text here..."
           />
         </div>
@@ -261,7 +261,7 @@ const Paraphraser = () => {
           <Textarea
             value={output}
             readOnly
-            className="flex-1 resize-none font-mono text-sm bg-muted"
+            className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
             placeholder="Generated text will appear here..."
           />
         </div>
