@@ -430,10 +430,10 @@ const CitationGenerator = () => {
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Citation Generator</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Citation Generator</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Create citations in multiple formats or convert between citation
           styles
         </p>
@@ -443,24 +443,24 @@ const CitationGenerator = () => {
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "create" | "auto" | "convert")}
       >
-        <TabsList className="mb-4">
-          <TabsTrigger value="create">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Citations
+        <TabsList className="mb-4 flex flex-wrap w-full">
+          <TabsTrigger value="create" className="flex-shrink-0">
+            <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Create</span>
           </TabsTrigger>
-          <TabsTrigger value="auto">
-            <Upload className="h-4 w-4 mr-2" />
-            Auto-Generate
+          <TabsTrigger value="auto" className="flex-shrink-0">
+            <Upload className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Auto</span>
           </TabsTrigger>
-          <TabsTrigger value="convert">
-            <ArrowRightLeft className="h-4 w-4 mr-2" />
-            Convert Format
+          <TabsTrigger value="convert" className="flex-shrink-0">
+            <ArrowRightLeft className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">Convert</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Create Tab */}
         <TabsContent value="create" className="flex-1 flex flex-col">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Source Information</CardTitle>
@@ -479,7 +479,7 @@ const CitationGenerator = () => {
                   onInputChange={handleInputChange}
                   onUseAIChange={setUseAI}
                 />
-                <div className="flex gap-2 pt-4">
+                <div className="flex gap-2 pt-4 flex-wrap">
                   <Button
                     onClick={handleGenerateCitation}
                     disabled={isLoading && useAI}
@@ -517,7 +517,7 @@ const CitationGenerator = () => {
 
         {/* Auto-Generate Tab */}
         <TabsContent value="auto" className="flex-1 flex flex-col">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Upload Document</CardTitle>
