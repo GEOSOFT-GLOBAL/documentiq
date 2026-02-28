@@ -213,10 +213,10 @@ Format your response in a clear, actionable way with specific keyword suggestion
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Keyword Extractor</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Keyword Extractor</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Extract keywords, analyze density, and get AI-powered SEO suggestions
         </p>
       </div>
@@ -227,7 +227,7 @@ Format your response in a clear, actionable way with specific keyword suggestion
           <CardDescription>Configure keyword extraction parameters</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-2">
               <Label htmlFor="min-length">
                 Minimum Word Length: {minWordLength[0]} characters
@@ -257,7 +257,7 @@ Format your response in a clear, actionable way with specific keyword suggestion
             </div>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             <div className="flex items-center space-x-2">
               <Switch
                 id="exclude-common"
@@ -278,7 +278,7 @@ Format your response in a clear, actionable way with specific keyword suggestion
         </CardContent>
       </Card>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button onClick={handleGetSEOSuggestions} disabled={loading || !text.trim()}>
           {loading ? (
             <>
@@ -288,12 +288,14 @@ Format your response in a clear, actionable way with specific keyword suggestion
           ) : (
             <>
               <TrendingUp className="h-4 w-4 mr-2" />
-              Get SEO Suggestions
+              <span className="hidden sm:inline">Get SEO Suggestions</span>
+              <span className="sm:hidden">SEO</span>
             </>
           )}
         </Button>
         <Button onClick={loadExample} variant="outline">
-          Load Example
+          <span className="hidden sm:inline">Load Example</span>
+          <span className="sm:hidden">Example</span>
         </Button>
         <Button onClick={handleReset} variant="outline">
           <RotateCcw className="h-4 w-4 mr-2" />
@@ -301,11 +303,11 @@ Format your response in a clear, actionable way with specific keyword suggestion
         </Button>
         <Button onClick={handleDownload} variant="outline" disabled={keywords.length === 0}>
           <Download className="h-4 w-4 mr-2" />
-          Download Report
+          <span className="hidden sm:inline">Download</span>
         </Button>
         <Button onClick={handleDownloadCSV} variant="outline" disabled={keywords.length === 0}>
           <Download className="h-4 w-4 mr-2" />
-          Export CSV
+          <span className="hidden sm:inline">Export CSV</span>
         </Button>
       </div>
 
@@ -317,7 +319,7 @@ Format your response in a clear, actionable way with specific keyword suggestion
       )}
 
       {stats.totalWords > 0 && (
-        <div className="grid grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-4">
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Total Words</CardDescription>
@@ -345,13 +347,13 @@ Format your response in a clear, actionable way with specific keyword suggestion
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <Label className="mb-2">Text to Analyze</Label>
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] lg:min-h-0"
             placeholder="Enter or paste your text here to extract keywords..."
           />
         </div>
@@ -420,7 +422,7 @@ Format your response in a clear, actionable way with specific keyword suggestion
           <Textarea
             value={seoSuggestions}
             readOnly
-            className="flex-1 resize-none text-sm bg-muted"
+            className="flex-1 resize-none text-sm bg-muted min-h-[150px] lg:min-h-0"
             placeholder="Click 'Get SEO Suggestions' to receive AI-powered keyword recommendations and optimization tips..."
           />
         </div>
