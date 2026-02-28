@@ -146,10 +146,10 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
       : 0;
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">AI Text Summarizer</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">AI Text Summarizer</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Generate concise summaries of long texts with AI-powered intelligence
         </p>
       </div>
@@ -161,33 +161,34 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
             Customize how your summary is generated
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
+        <CardContent className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-2">
               <Label>Summary Length</Label>
               <RadioGroup
                 value={summaryLength}
                 onValueChange={(v) => setSummaryLength(v as SummaryLength)}
+                className="space-y-2"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="short" id="short" />
-                  <Label htmlFor="short" className="font-normal cursor-pointer">
-                    Short (2-3 sentences)
+                  <Label htmlFor="short" className="font-normal cursor-pointer text-sm">
+                    Short
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="medium" id="medium" />
                   <Label
                     htmlFor="medium"
-                    className="font-normal cursor-pointer"
+                    className="font-normal cursor-pointer text-sm"
                   >
-                    Medium (1-2 paragraphs)
+                    Medium
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="long" id="long" />
-                  <Label htmlFor="long" className="font-normal cursor-pointer">
-                    Long (3-4 paragraphs)
+                  <Label htmlFor="long" className="font-normal cursor-pointer text-sm">
+                    Long
                   </Label>
                 </div>
               </RadioGroup>
@@ -229,7 +230,7 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
         </CardContent>
       </Card>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button onClick={handleSummarize} disabled={isLoading || !input.trim()}>
           {isLoading ? (
             <>
@@ -261,7 +262,8 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
         <Button variant="outline" asChild>
           <label htmlFor="file-upload" className="cursor-pointer">
             <Upload className="h-4 w-4 mr-2" />
-            Upload File
+            <span className="hidden sm:inline">Upload File</span>
+            <span className="sm:hidden">Upload</span>
             <input
               id="file-upload"
               type="file"
@@ -279,7 +281,7 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <Label>Original Text</Label>
@@ -290,7 +292,7 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
             placeholder="Enter or paste your text here, or upload a file..."
           />
         </div>
@@ -310,7 +312,7 @@ Looking ahead, the future of AI holds both tremendous promise and significant ch
           <Textarea
             value={output}
             readOnly
-            className="flex-1 resize-none font-mono text-sm bg-muted"
+            className="flex-1 resize-none font-mono text-sm bg-muted min-h-[150px] sm:min-h-0"
             placeholder="Summary will appear here..."
           />
         </div>
