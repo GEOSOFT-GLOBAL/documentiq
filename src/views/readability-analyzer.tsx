@@ -249,15 +249,15 @@ Format your response in a clear, actionable way.`;
   const fleschInfo = scores ? getFleschInterpretation(scores.fleschKincaid) : null;
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-3 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Readability Analyzer</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Readability Analyzer</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Analyze text readability with multiple scoring algorithms and get AI-powered improvement suggestions
         </p>
       </div>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button onClick={handleGetSuggestions} disabled={loading || !text.trim()}>
           {loading ? (
             <>
@@ -267,12 +267,14 @@ Format your response in a clear, actionable way.`;
           ) : (
             <>
               <BookOpen className="h-4 w-4 mr-2" />
-              Get AI Suggestions
+              <span className="hidden sm:inline">Get AI Suggestions</span>
+              <span className="sm:hidden">Analyze</span>
             </>
           )}
         </Button>
         <Button onClick={loadExample} variant="outline">
-          Load Example
+          <span className="hidden sm:inline">Load Example</span>
+          <span className="sm:hidden">Example</span>
         </Button>
         <Button onClick={handleReset} variant="outline">
           <RotateCcw className="h-4 w-4 mr-2" />
@@ -296,7 +298,7 @@ Format your response in a clear, actionable way.`;
       )}
 
       {scores && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
           <Card>
             <CardHeader>
               <CardDescription>Flesch Reading Ease</CardDescription>
@@ -426,13 +428,13 @@ Format your response in a clear, actionable way.`;
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="flex flex-col">
           <Label className="mb-2">Text to Analyze</Label>
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="flex-1 resize-none font-mono text-sm"
+            className="flex-1 resize-none font-mono text-sm min-h-[150px] sm:min-h-0"
             placeholder="Enter or paste your text here to analyze its readability..."
           />
         </div>
@@ -442,7 +444,7 @@ Format your response in a clear, actionable way.`;
           <Textarea
             value={suggestions}
             readOnly
-            className="flex-1 resize-none text-sm bg-muted"
+            className="flex-1 resize-none text-sm bg-muted min-h-[150px] sm:min-h-0"
             placeholder="Click 'Get AI Suggestions' to receive personalized recommendations for improving readability..."
           />
         </div>
