@@ -444,15 +444,15 @@ const CitationGenerator = () => {
         onValueChange={(v) => setActiveTab(v as "create" | "auto" | "convert")}
       >
         <TabsList className="mb-4 flex flex-wrap w-full">
-          <TabsTrigger value="create" className="flex-shrink-0">
+          <TabsTrigger value="create" className="shrink-0">
             <Plus className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="text-xs sm:text-sm">Create</span>
           </TabsTrigger>
-          <TabsTrigger value="auto" className="flex-shrink-0">
+          <TabsTrigger value="auto" className="shrink-0">
             <Upload className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="text-xs sm:text-sm">Auto</span>
           </TabsTrigger>
-          <TabsTrigger value="convert" className="flex-shrink-0">
+          <TabsTrigger value="convert" className="shrink-0">
             <ArrowRightLeft className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="text-xs sm:text-sm">Convert</span>
           </TabsTrigger>

@@ -41,7 +41,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Custom breakpoints for mobile */
-  --breakpoint-xs: 40rem;
+  --breakpoint-xs: 30rem;
 }
 
 :root {

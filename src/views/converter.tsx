@@ -287,10 +287,10 @@ const Converter = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="h-full flex flex-col p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Document Converter</h1>
-          <p className="text-muted-foreground">
+      <div className="h-full flex flex-col p-4 md:p-6 overflow-x-hidden">
+        <div className="mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Document Converter</h1>
+          <p className="text-muted-foreground text-sm md:text-base">
             High-performance document conversion powered by Rust/WASM
           </p>
         </div>
@@ -298,33 +298,37 @@ const Converter = () => {
       <Tabs
         value={conversionType}
         onValueChange={(v) => setConversionType(v as ConversionType)}
-        className="mb-4"
+        className="mb-4 w-full overflow-x-auto"
       >
-        <TabsList>
-          <TabsTrigger value="md-html">
-            <FileText className="h-4 w-4 mr-2" />
-            MD → HTML
+        <TabsList className="flex w-full min-w-max">
+          <TabsTrigger value="md-html" className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">MD → HTML</span>
+            <span className="sm:hidden">HTML</span>
           </TabsTrigger>
-          <TabsTrigger value="md-pdf">
-            <FileText className="h-4 w-4 mr-2" />
-            MD → PDF
+          <TabsTrigger value="md-pdf" className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">MD → PDF</span>
+            <span className="sm:hidden">PDF</span>
           </TabsTrigger>
-          <TabsTrigger value="latex-mathml">
-            <Code className="h-4 w-4 mr-2" />
-            LaTeX → MathML
+          <TabsTrigger value="latex-mathml" className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+            <Code className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">LaTeX → MathML</span>
+            <span className="sm:hidden">MathML</span>
           </TabsTrigger>
-          <TabsTrigger value="latex-pdf" disabled>
-            <Code className="h-4 w-4 mr-2" />
-            LaTeX → PDF
+          <TabsTrigger value="latex-pdf" disabled className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+            <Code className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">LaTeX → PDF</span>
+            <span className="sm:hidden">LaTeX</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
-      <div className="flex gap-2 mb-4">
-        <Button onClick={handleConvert} disabled={!input}>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Button onClick={handleConvert} disabled={!input} size="sm">
           Convert
         </Button>
-        <Button onClick={loadExample} variant="outline">
+        <Button onClick={loadExample} variant="outline" size="sm">
           Load Example
         </Button>
         {conversionType === "md-pdf" ? (
@@ -333,40 +337,44 @@ const Converter = () => {
               onClick={handleDownload}
               variant="outline"
               disabled={!output}
+              size="sm"
             >
               <Download className="h-4 w-4 mr-2" />
-              Download PDF
+              <span className="hidden sm:inline">Download PDF</span>
+              <span className="sm:hidden">PDF</span>
             </Button>
             <Button
               onClick={handleBrowserPrint}
               variant="outline"
               disabled={!output}
+              size="sm"
             >
               <Printer className="h-4 w-4 mr-2" />
-              Print
+              <span className="hidden sm:inline">Print</span>
+              <span className="sm:hidden">Print</span>
             </Button>
           </>
         ) : (
-          <Button onClick={handleDownload} variant="outline" disabled={!output}>
+          <Button onClick={handleDownload} variant="outline" disabled={!output} size="sm">
             <Download className="h-4 w-4 mr-2" />
             Download
           </Button>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
-        <div className="flex flex-col">
-          <Label className="mb-2">Input</Label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-col min-h-[200px] overflow-hidden">
+          <Label className="mb-2 text-sm md:text-base">Input</Label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 p-4 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 w-full p-3 md:p-4 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary min-h-[150px] box-border"
             placeholder="Enter your content here..."
           />
         </div>
 
-        <div className="flex flex-col">
-          <Label className="mb-2">
+        <div className="flex flex-col min-h-[200px] overflow-hidden">
+          <Label className="mb-2 text-sm md:text-base">
             Output Preview
             {conversionType === "md-html" ||
             conversionType === "md-pdf" ||
@@ -374,7 +382,7 @@ const Converter = () => {
               ? " (Rendered)"
               : " (Source)"}
           </Label>
-          <div className="flex-1 border rounded-md overflow-hidden">
+          <div className="flex-1 w-full border rounded-md overflow-hidden min-h-[150px] box-border">
             {output ? (
               conversionType === "md-html" || conversionType === "md-pdf" ? (
                 <iframe
@@ -384,15 +392,15 @@ const Converter = () => {
                   title="Output Preview"
                 />
               ) : (
-                <div className="h-full p-4 bg-muted overflow-auto">
-                  <pre className="font-mono text-sm whitespace-pre-wrap">
+                <div className="h-full p-3 md:p-4 bg-muted overflow-auto">
+                  <pre className="font-mono text-xs md:text-sm whitespace-pre-wrap">
                     {output}
                   </pre>
                 </div>
               )
             ) : (
-              <div className="h-full p-4 bg-muted flex items-center justify-center">
-                <p className="text-muted-foreground">
+              <div className="h-full p-3 md:p-4 bg-muted flex items-center justify-center">
+                <p className="text-muted-foreground text-sm">
                   Output will appear here...
                 </p>
               </div>
