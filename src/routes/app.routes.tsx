@@ -12,6 +12,7 @@ import LanguageTranslator from "@/views/language-translator";
 import QRGenerator from "@/views/qr-generator";
 import Settings from "@/views/settings";
 import CSVConverter from "@/views/csv-converter";
+import History from "@/views/history";
 
 export const appRoutes = [
   {
@@ -69,5 +70,9 @@ export const appRoutes = [
   {
     path: "csv-converter",
     element: <CSVConverter />,
+  },
+  {
+    path: "history",
+    element: <History />,
   },
 ];
