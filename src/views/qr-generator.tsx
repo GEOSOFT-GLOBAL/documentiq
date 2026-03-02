@@ -245,22 +245,22 @@ const QRGenerator = () => {
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">QR Code Generator</h1>
-        <p className="text-muted-foreground">
+    <div className="h-full flex flex-col p-4 md:p-6 overflow-x-hidden">
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">QR Code Generator</h1>
+        <p className="text-muted-foreground text-sm md:text-base">
           Generate QR codes for text, URLs, emails, phone numbers, WiFi, and
           more
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 flex-1 overflow-hidden">
         {/* Left Panel - Input */}
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4 overflow-auto">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Content Type</CardTitle>
-              <CardDescription>
+            <CardHeader className="pb-3 md:pb-4">
+              <CardTitle className="text-base md:text-lg">Content Type</CardTitle>
+              <CardDescription className="text-xs md:text-sm">
                 Select what type of QR code to generate
               </CardDescription>
             </CardHeader>
@@ -269,45 +269,45 @@ const QRGenerator = () => {
                 value={activeTab}
                 onValueChange={(v) => setActiveTab(v as QRType)}
               >
-                <TabsList className="grid grid-cols-3 mb-4">
-                  <TabsTrigger value="text">
-                    <MessageSquare className="h-4 w-4 mr-1" />
-                    Text
+                <TabsList className="grid grid-cols-3 mb-2 md:mb-4">
+                  <TabsTrigger value="text" className="text-xs md:text-sm">
+                    <MessageSquare className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">Text</span>
                   </TabsTrigger>
-                  <TabsTrigger value="url">
-                    <Link className="h-4 w-4 mr-1" />
-                    URL
+                  <TabsTrigger value="url" className="text-xs md:text-sm">
+                    <Link className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">URL</span>
                   </TabsTrigger>
-                  <TabsTrigger value="email">
-                    <Mail className="h-4 w-4 mr-1" />
-                    Email
+                  <TabsTrigger value="email" className="text-xs md:text-sm">
+                    <Mail className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">Email</span>
                   </TabsTrigger>
                 </TabsList>
                 <TabsList className="grid grid-cols-3">
-                  <TabsTrigger value="phone">
-                    <Phone className="h-4 w-4 mr-1" />
-                    Phone
+                  <TabsTrigger value="phone" className="text-xs md:text-sm">
+                    <Phone className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">Phone</span>
                   </TabsTrigger>
-                  <TabsTrigger value="sms">
-                    <MessageSquare className="h-4 w-4 mr-1" />
-                    SMS
+                  <TabsTrigger value="sms" className="text-xs md:text-sm">
+                    <MessageSquare className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">SMS</span>
                   </TabsTrigger>
-                  <TabsTrigger value="wifi">
-                    <Wifi className="h-4 w-4 mr-1" />
-                    WiFi
+                  <TabsTrigger value="wifi" className="text-xs md:text-sm">
+                    <Wifi className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    <span className="hidden sm:inline">WiFi</span>
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="text" className="mt-4">
+                <TabsContent value="text" className="mt-3 md:mt-4">
                   <Textarea
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     placeholder="Enter any text..."
-                    className="min-h-[120px]"
+                    className="min-h-[100px] md:min-h-[120px] text-sm"
                   />
                 </TabsContent>
 
-                <TabsContent value="url" className="mt-4">
+                <TabsContent value="url" className="mt-3 md:mt-4">
                   <Input
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
@@ -315,7 +315,7 @@ const QRGenerator = () => {
                   />
                 </TabsContent>
 
-                <TabsContent value="email" className="mt-4 space-y-3">
+                <TabsContent value="email" className="mt-3 md:mt-4 space-y-2 md:space-y-3">
                   <Input
                     value={emailInput.to}
                     onChange={(e) =>
@@ -336,11 +336,11 @@ const QRGenerator = () => {
                       setEmailInput({ ...emailInput, body: e.target.value })
                     }
                     placeholder="Message body (optional)"
-                    className="min-h-[80px]"
+                    className="min-h-[60px] md:min-h-[80px] text-sm"
                   />
                 </TabsContent>
 
-                <TabsContent value="phone" className="mt-4">
+                <TabsContent value="phone" className="mt-3 md:mt-4">
                   <Input
                     value={phoneInput}
                     onChange={(e) => setPhoneInput(e.target.value)}
@@ -348,7 +348,7 @@ const QRGenerator = () => {
                   />
                 </TabsContent>
 
-                <TabsContent value="sms" className="mt-4 space-y-3">
+                <TabsContent value="sms" className="mt-3 md:mt-4 space-y-2 md:space-y-3">
                   <Input
                     value={smsInput.phone}
                     onChange={(e) =>
@@ -362,11 +362,11 @@ const QRGenerator = () => {
                       setSmsInput({ ...smsInput, message: e.target.value })
                     }
                     placeholder="Message (optional)"
-                    className="min-h-[80px]"
+                    className="min-h-[60px] md:min-h-[80px] text-sm"
                   />
                 </TabsContent>
 
-                <TabsContent value="wifi" className="mt-4 space-y-3">
+                <TabsContent value="wifi" className="mt-3 md:mt-4 space-y-2 md:space-y-3">
                   <Input
                     value={wifiInput.ssid}
                     onChange={(e) =>
@@ -407,13 +407,13 @@ const QRGenerator = () => {
 
           {/* Customization Options */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Customization</CardTitle>
-              <CardDescription>Adjust size and colors</CardDescription>
+            <CardHeader className="pb-3 md:pb-4">
+              <CardTitle className="text-base md:text-lg">Customization</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Adjust size and colors</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 md:space-y-4">
               <div className="space-y-2">
-                <Label>Size: {size[0]}px</Label>
+                <Label className="text-sm">Size: {size[0]}px</Label>
                 <Slider
                   value={size}
                   onValueChange={setSize}
@@ -423,44 +423,44 @@ const QRGenerator = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 <div className="space-y-2">
-                  <Label>Foreground Color</Label>
+                  <Label className="text-sm">Foreground</Label>
                   <div className="flex gap-2">
                     <Input
                       type="color"
                       value={fgColor}
                       onChange={(e) => setFgColor(e.target.value)}
-                      className="w-12 h-10 p-1 cursor-pointer"
+                      className="w-10 h-9 md:h-10 p-1 cursor-pointer"
                     />
                     <Input
                       value={fgColor}
                       onChange={(e) => setFgColor(e.target.value)}
-                      className="flex-1"
+                      className="flex-1 text-sm"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Background Color</Label>
+                  <Label className="text-sm">Background</Label>
                   <div className="flex gap-2">
                     <Input
                       type="color"
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
-                      className="w-12 h-10 p-1 cursor-pointer"
+                      className="w-10 h-9 md:h-10 p-1 cursor-pointer"
                     />
                     <Input
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
-                      className="flex-1"
+                      className="flex-1 text-sm"
                     />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Error Correction Level</Label>
+                <Label className="text-sm">Error Correction</Label>
                 <Select
                   value={errorLevel}
                   onValueChange={(v) => setErrorLevel(v as typeof errorLevel)}
@@ -481,51 +481,55 @@ const QRGenerator = () => {
         </div>
 
         {/* Right Panel - Preview */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">QR Code Preview</CardTitle>
-            <CardDescription>Your generated QR code</CardDescription>
+        <Card className="h-fit lg:sticky lg:top-4">
+          <CardHeader className="pb-3 md:pb-4">
+            <CardTitle className="text-base md:text-lg">QR Code Preview</CardTitle>
+            <CardDescription className="text-xs md:text-sm">Your generated QR code</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center space-y-4">
+          <CardContent className="flex flex-col items-center justify-center space-y-3 md:space-y-4">
             <canvas ref={canvasRef} className="hidden" />
 
             {qrDataUrl ? (
-              <div className="p-4 bg-white rounded-lg shadow-sm">
-                <img src={qrDataUrl} alt="QR Code" className="max-w-full" />
+              <div className="p-2 md:p-4 bg-white rounded-lg shadow-sm">
+                <img src={qrDataUrl} alt="QR Code" className="max-w-[200px] md:max-w-full" />
               </div>
             ) : (
-              <div className="w-64 h-64 border-2 border-dashed rounded-lg flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <QrCode className="h-16 w-16 mx-auto mb-2 opacity-30" />
-                  <p>Enter content to generate QR code</p>
+              <div className="w-48 h-48 md:w-64 md:h-64 border-2 border-dashed rounded-lg flex items-center justify-center">
+                <div className="text-center text-muted-foreground p-4">
+                  <QrCode className="h-10 w-10 md:h-16 md:w-16 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">Enter content to generate QR code</p>
                 </div>
               </div>
             )}
 
-            <div className="flex gap-2 flex-wrap justify-center">
-              <Button onClick={handleDownloadPNG} disabled={!qrDataUrl}>
-                <Download className="h-4 w-4 mr-2" />
-                Download PNG
+            <div className="flex gap-1 md:gap-2 flex-wrap justify-center w-full">
+              <Button onClick={handleDownloadPNG} disabled={!qrDataUrl} size="sm" className="text-xs md:text-sm">
+                <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">PNG</span>
               </Button>
               <Button
                 onClick={handleDownloadSVG}
                 variant="outline"
                 disabled={!qrDataUrl}
+                size="sm"
+                className="text-xs md:text-sm"
               >
-                <Download className="h-4 w-4 mr-2" />
-                Download SVG
+                <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">SVG</span>
               </Button>
               <Button
                 onClick={handleCopyToClipboard}
                 variant="outline"
                 disabled={!qrDataUrl}
+                size="sm"
+                className="text-xs md:text-sm"
               >
-                <Copy className="h-4 w-4 mr-2" />
-                Copy
+                <Copy className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Copy</span>
               </Button>
-              <Button onClick={handleReset} variant="outline">
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
+              <Button onClick={handleReset} variant="outline" size="sm" className="text-xs md:text-sm">
+                <RotateCcw className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Reset</span>
               </Button>
             </div>
           </CardContent>
