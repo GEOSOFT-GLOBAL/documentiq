@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Settings,
@@ -21,6 +22,7 @@ import {
   Table,
   History,
   Type,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -97,39 +99,65 @@ const AppLayout = () => {
         />
       )}
 
-      {/* Sidebar */}
-      <Card
+      {/* Sidebar & User Profile Container */}
+      <div
         className={cn(
-          "w-64 md:w-44 p-0 md:p-4 h-fit md:sticky md:top-4 z-50",
-          "fixed top-0 left-0 bottom-0 md:relative transition-transform duration-300 rounded-none md:rounded-lg",
+          "fixed md:relative top-0 left-0 bottom-0 z-50 md:z-auto w-64 md:w-44",
+          "flex flex-col justify-between transition-transform duration-300",
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full md:translate-x-0",
         )}
       >
-        <div className="space-y-2 md:space-y-4 p-3 md:p-0">
-          <h2 className="text-lg font-semibold hidden md:block px-2">DocumentIQ</h2>
-          <nav className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsSidebarOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm",
-                    location.pathname === item.path && "bg-accent",
-                  )}
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      </Card>
+        {/* Sidebar */}
+        <Card className="rounded-none md:rounded-lg h-full md:h-auto">
+          <div className="space-y-2 md:space-y-4 p-3 md:p-4 overflow-auto">
+            <h2 className="text-lg font-semibold hidden md:block px-2">DocumentIQ</h2>
+            <nav className="space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsSidebarOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm",
+                      location.pathname === item.path && "bg-accent",
+                    )}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </Card>
+
+        {/* User Profile Card - Below Sidebar */}
+        <Card className="rounded-none md:rounded-lg border-t-0 md:border-t">
+          <div className="p-3 md:p-4">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/50">
+              <Avatar className="h-9 w-9">
+                <AvatarFallback className="text-xs">JD</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">John Doe</p>
+                <p className="text-xs text-muted-foreground truncate">john@example.com</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                title="Logout"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
 
       {/* Settings & History Icons - Desktop Only */}
       <div className="hidden md:flex fixed m-5 top-4 right-4 z-50 gap-2">
