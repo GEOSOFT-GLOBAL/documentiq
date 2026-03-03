@@ -20,6 +20,7 @@ import {
   QrCode,
   Table,
   History,
+  Type,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -41,6 +42,7 @@ const AppLayout = () => {
     { path: "/app/translator", label: "Translator", icon: Globe },
     { path: "/app/qr-generator", label: "QR Code", icon: QrCode },
     { path: "/app/csv-converter", label: "CSV Converter", icon: Table },
+    { path: "/app/lorem-ipsum", label: "Lorem Ipsum", icon: Type },
   ];
 
   return (

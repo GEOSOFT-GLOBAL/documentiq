@@ -13,6 +13,7 @@ import QRGenerator from "@/views/qr-generator";
 import Settings from "@/views/settings";
 import CSVConverter from "@/views/csv-converter";
 import History from "@/views/history";
+import LoremIpsumGenerator from "@/views/lorem-ipsum";
 
 export const appRoutes = [
   {
@@ -74,5 +75,9 @@ export const appRoutes = [
   {
     path: "history",
     element: <History />,
+  },
+  {
+    path: "lorem-ipsum",
+    element: <LoremIpsumGenerator />,
   },
 ];
