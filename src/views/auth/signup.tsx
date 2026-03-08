@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -215,8 +216,7 @@ const Signup = () => {
 
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border rounded-md bg-background"
@@ -232,8 +232,7 @@ const Signup = () => {
             <label className="block text-sm font-medium mb-1">
               Confirm Password
             </label>
-            <input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full px-3 py-2 border rounded-md bg-background"
