@@ -6,7 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { handleGoogleCallback, isLoading, error, clearError } = useAuthStore();
+  const { handleGoogleCallback, clearError } = useAuthStore();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
