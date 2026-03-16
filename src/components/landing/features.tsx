@@ -115,7 +115,7 @@ const Features = () => {
             Powerful Tools for Every Need
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From writing and editing to converting and analyzing, DocumentIQ has everything you need to work with documents efficiently.
+            From writing and editing to converting and analyzing, DocxIQ has everything you need to work with documents efficiently.
           </p>
         </div>
 
