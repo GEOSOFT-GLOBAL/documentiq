@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { PasswordInput } from "@/components/ui/password-input";
 
@@ -97,9 +97,9 @@ const Login = () => {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <a href="/auth/signup" className="text-primary hover:underline">
+          <Link to="/auth/signup" className="text-primary hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
