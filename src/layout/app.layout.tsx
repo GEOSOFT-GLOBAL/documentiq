@@ -102,7 +102,7 @@ const AppLayout = () => {
       {/* Sidebar & User Profile Container */}
       <div
         className={cn(
-          "fixed md:relative top-0 left-0 bottom-0 z-50 md:z-auto w-64 md:w-44",
+          "fixed top-0 left-0 bottom-0 z-50 w-64 md:w-44 py-3",
           "flex flex-col justify-between transition-transform duration-300",
           isSidebarOpen
             ? "translate-x-0"
@@ -188,7 +188,7 @@ const AppLayout = () => {
       </div>
 
       {/* Main Content */}
-      <Card className="flex-1 p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
+      <Card className="flex-1 ml-0 md:ml-44 p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
         <Outlet />
       </Card>
     </div>
