@@ -48,7 +48,7 @@ const AppLayout = () => {
   ];
 
   return (
-    <div className="flex min-h-screen gap-0 md:gap-4 p-0 md:p-4 bg-background relative">
+    <div className="flex h-screen overflow-hidden gap-0 md:gap-4 p-0 md:p-4 bg-background relative">
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-background border-b">
         <div className="flex items-center justify-between p-4">
@@ -188,7 +188,7 @@ const AppLayout = () => {
       </div>
 
       {/* Main Content */}
-      <Card className="flex-1 ml-0 md:ml-44 p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
+      <Card className="flex-1 ml-0 md:ml-44 overflow-auto max-h-screen p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
         <Outlet />
       </Card>
     </div>
