@@ -188,7 +188,7 @@ const AppLayout = () => {
       </div>
 
       {/* Main Content */}
-      <Card className="flex-1 ml-0 md:ml-44 overflow-auto max-h-screen p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
+      <Card className="flex-1 ml-0 md:ml-44 overflow-auto md:overflow-hidden max-h-screen p-3 md:p-6 mt-16 md:mt-0 rounded-none md:rounded-lg">
         <Outlet />
       </Card>
     </div>
